@@ -27,8 +27,8 @@ func main() {
 
 	fmt.Println("This model has", len(pnml.Nets), "nets")
 	for i, net := range pnml.Nets {
-		fmt.Println("Net", i, "has", len(net.Pages), "pages and is called", net.Name.Text)
-		fmt.Println("Its type is", net.Type)
+		fmt.Println("Net", i, "has", len(net.Pages), "pages")
+		fmt.Println("Its type is", *net.Type)
 		for j, page := range net.Pages {
 			fmt.Println("Page", j, "\t", len(page.Pages), "pages")
 			fmt.Println("\t", len(page.Places), "places")
