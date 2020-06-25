@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	"github.com/loig/pinimili/pnml"
+	"github.com/loig/pinimili/ptnet"
 )
 
 func main() {
@@ -19,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	var pnml Pnml
+	var pnml pnml.Pnml
 	err = xml.Unmarshal(byteValue, &pnml)
 	if err != nil {
 		panic(err)
@@ -37,6 +40,14 @@ func main() {
 		}
 	}
 
-	byteValue2, err := xml.Marshal(pnml)
-	fmt.Println(string(byteValue2))
+	net := ptnet.NewFromPnml(pnml)
+	fmt.Println("Extracted net has:")
+	fmt.Println("\t", len(net[0].Places), "places")
+	fmt.Println("\t", len(net[0].Transitions), "transitions")
+	fmt.Println("\t", len(net[0].Arcs), "arcs")
+
+	/*
+		byteValue2, err := xml.Marshal(pnml)
+		fmt.Println(string(byteValue2))
+	*/
 }

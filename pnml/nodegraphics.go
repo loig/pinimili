@@ -1,4 +1,4 @@
-package main
+package pnml
 
 import (
 	"encoding/xml"
