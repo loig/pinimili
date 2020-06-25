@@ -22,9 +22,18 @@ func NewFromPnml(p pnml.Pnml) []Net {
 
 		var ptNet Net
 
+		// Get all the pages
+		pages := make([]pnml.Page, 0)
+		pages = append(pages, net.Pages...)
+		for pageNum := 0; pageNum < len(pages); pageNum++ {
+			if len(pages[pageNum].Pages) > 0 {
+				pages = append(pages, pages[pageNum].Pages...)
+			}
+		}
+
 		// Get the places
 		ptNet.Places = make(map[string]Place)
-		for _, page := range net.Pages {
+		for _, page := range pages {
 			for _, place := range page.Places {
 				var ptPlace Place
 				ptPlace.ID = *place.ID
@@ -40,7 +49,7 @@ func NewFromPnml(p pnml.Pnml) []Net {
 
 		// Get the transitions
 		ptNet.Transitions = make(map[string]Transition)
-		for _, page := range net.Pages {
+		for _, page := range pages {
 			for _, transition := range page.Transitions {
 				var ptTransition Transition
 				ptTransition.ID = *transition.ID
@@ -53,7 +62,7 @@ func NewFromPnml(p pnml.Pnml) []Net {
 
 		// Get the arcs
 		ptNet.Arcs = make([]Arc, 0)
-		for _, page := range net.Pages {
+		for _, page := range pages {
 			for _, arc := range page.Arcs {
 				var ptArc Arc
 				ptArc.ID = *arc.ID
