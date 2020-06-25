@@ -9,7 +9,6 @@ import (
 func NewFromPnml(p pnml.Pnml) []Net {
 	// TODO:
 	// - places/transitions with same ID
-	// - get all pages (pages in pages)
 
 	log.SetPrefix("ptnet.NewFromPnml:")
 
@@ -37,6 +36,12 @@ func NewFromPnml(p pnml.Pnml) []Net {
 			for _, place := range page.Places {
 				var ptPlace Place
 				ptPlace.ID = *place.ID
+
+				_, isPlace := ptNet.Places[ptPlace.ID]
+				if isPlace {
+					log.Panic("Two places have the same ID: ", ptPlace.ID)
+				}
+
 				if place.Name != nil && (*place.Name).Text != nil {
 					ptPlace.Name = *(*place.Name).Text
 				}
@@ -53,6 +58,16 @@ func NewFromPnml(p pnml.Pnml) []Net {
 			for _, transition := range page.Transitions {
 				var ptTransition Transition
 				ptTransition.ID = *transition.ID
+
+				_, isPlace := ptNet.Places[ptTransition.ID]
+				if isPlace {
+					log.Panic("A place and a transistion have the same ID: ", ptTransition.ID)
+				}
+				_, isTransition := ptNet.Transitions[ptTransition.ID]
+				if isTransition {
+					log.Panic("Two transistions have the same ID: ", ptTransition.ID)
+				}
+
 				if transition.Name != nil && (*transition.Name).Text != nil {
 					ptTransition.Name = *(*transition.Name).Text
 				}
