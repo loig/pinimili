@@ -12,6 +12,7 @@ type Page struct {
 	ID             *string         `xml:"id,attr"`
 	Name           *Name           `xml:"name"`                // optional
 	ToolSpecifics  []ToolSpecific  `xml:"toolspecific"`        // optional
+	HLDeclarations []HLDeclaration `xml:"declaration"`         // optional
 	Pages          []Page          `xml:"page"`                // optional
 	Places         []Place         `xml:"place"`               // optional
 	Transitions    []Transition    `xml:"transition"`          // optional

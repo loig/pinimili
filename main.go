@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/loig/pinimili/pnml"
-	"github.com/loig/pinimili/ptnet"
 )
 
 func main() {
@@ -30,24 +29,32 @@ func main() {
 
 	fmt.Println("This model has", len(pnml.Nets), "nets")
 	for i, net := range pnml.Nets {
-		fmt.Println("Net", i, "has", len(net.Pages), "pages")
+		fmt.Println("Net", i, "has", len(net.Pages), "pages and", len(net.HLDeclarations), "high level declarations")
 		fmt.Println("Its type is", *net.Type)
+		for j, decl := range net.HLDeclarations {
+			fmt.Println("High level declaration", j)
+			fmt.Println("\t", len(decl.SortDeclarations), "sorts")
+			fmt.Println("\t", len(decl.VariableDeclarations), "variables")
+			fmt.Println("\t", len(decl.OperatorDeclarations), "operators")
+		}
 		for j, page := range net.Pages {
-			fmt.Println("Page", j, "\t", len(page.Pages), "pages")
+			fmt.Println("Page", j)
+			fmt.Println("\t", len(page.Pages), "pages")
 			fmt.Println("\t", len(page.Places), "places")
 			fmt.Println("\t", len(page.Transitions), "transitions")
 			fmt.Println("\t", len(page.Arcs), "arcs")
 		}
 	}
 
-	net := ptnet.NewFromPnml(pnml)
-	fmt.Println("Extracted net has:")
-	fmt.Println("\t", len(net[0].Places), "places")
-	fmt.Println("\t", len(net[0].Transitions), "transitions")
-	fmt.Println("\t", len(net[0].Arcs), "arcs")
-
 	/*
-		byteValue2, err := xml.Marshal(pnml)
-		fmt.Println(string(byteValue2))
+		net := ptnet.NewFromPnml(pnml)
+		fmt.Println("Extracted net has:")
+		fmt.Println("\t", len(net[0].Places), "places")
+		fmt.Println("\t", len(net[0].Transitions), "transitions")
+		fmt.Println("\t", len(net[0].Arcs), "arcs")
 	*/
+
+	byteValue2, err := xml.MarshalIndent(pnml, "", "\t")
+	fmt.Println(string(byteValue2))
+
 }

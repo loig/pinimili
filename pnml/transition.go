@@ -10,6 +10,7 @@ type Transition struct {
 	ID            *string        `xml:"id,attr"`
 	Name          *Name          `xml:"name"`         // optional
 	ToolSpecifics []ToolSpecific `xml:"toolspecific"` // optional
+	Condition     *HLCondition   `xml:"condition"`    // label for hl nets only, optional
 	Graphics      *NodeGraphics  `xml:"graphics"`     // optional
 	// transition.labels def to be empty
 }

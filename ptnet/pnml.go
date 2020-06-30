@@ -7,10 +7,9 @@ import (
 )
 
 func NewFromPnml(p pnml.Pnml) []Net {
-	// TODO:
-	// - places/transitions with same ID
 
-	log.SetPrefix("ptnet.NewFromPnml:")
+	log.SetFlags(0)
+	log.SetPrefix("ptnet.NewFromPnml: ")
 
 	ptNets := make([]Net, 0)
 	for _, net := range p.Nets {

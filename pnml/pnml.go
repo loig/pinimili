@@ -6,9 +6,8 @@ import (
 )
 
 type Pnml struct {
-	XMLName xml.Name `xml:"pnml"`
-	XMLNs   *string  `xml:"xmlns,attr"` //optional
-	Nets    []Net    `xml:"net"`        // at least 1
+	XMLName xml.Name `xml:"http://www.pnml.org/version-2009/grammar/pnml pnml"`
+	Nets    []Net    `xml:"net"` // at least 1
 }
 
 func (p *Pnml) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

@@ -6,12 +6,13 @@ import (
 )
 
 type Net struct {
-	XMLName       xml.Name       `xml:"net"`
-	ID            *string        `xml:"id,attr"`
-	Type          *string        `xml:"type,attr"`
-	Name          *Name          `xml:"name"`         // optional
-	Pages         []Page         `xml:"page"`         // at least 1
-	ToolSpecifics []ToolSpecific `xml:"toolspecific"` // optional
+	XMLName        xml.Name        `xml:"net"`
+	ID             *string         `xml:"id,attr"`
+	Type           *string         `xml:"type,attr"`
+	Name           *Name           `xml:"name"`         // optional
+	HLDeclarations []HLDeclaration `xml:"declaration"`  // optional
+	Pages          []Page          `xml:"page"`         // at least 1
+	ToolSpecifics  []ToolSpecific  `xml:"toolspecific"` // optional
 	// net.labels def to be empty
 }
 
@@ -27,7 +28,8 @@ func (n *Net) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if nn.Type == nil || *nn.Type == "" {
 		return errors.New("A net must have a non-empty type")
 	}
-	if *nn.Type != "http://www.pnml.org/version-2009/grammar/ptnet" {
+	if *nn.Type != "http://www.pnml.org/version-2009/grammar/ptnet" &&
+		*nn.Type != "http://www.pnml.org/version-2009/grammar/symmetricnet" {
 		return errors.New("Unsupported net type")
 	}
 	if len(nn.Pages) < 1 {

@@ -10,10 +10,11 @@ type Arc struct {
 	ID            *string          `xml:"id,attr"`
 	Source        *string          `xml:"source,attr"`
 	Target        *string          `xml:"target,attr"`
-	Name          *Name            `xml:"name"`         // optional
-	Weight        *PTArcAnnotation `xml:"inscription"`  // label for pt nets only
-	Graphics      *EdgeGraphics    `xml:"graphics"`     // optional
-	ToolSpecifics []ToolSpecific   `xml:"toolspecific"` // optional
+	Name          *Name            `xml:"name"`          // optional
+	Weight        *PTArcAnnotation `xml:"inscription"`   // label for pt nets only
+	HLInscription *HLAnnotation    `xml:"hlinscription"` // label for hl nets only, optional
+	Graphics      *EdgeGraphics    `xml:"graphics"`      // optional
+	ToolSpecifics []ToolSpecific   `xml:"toolspecific"`  // optional
 	// arc.labels defined to be empty
 }
 
