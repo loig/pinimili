@@ -24,6 +24,7 @@ type HLSort struct {
 	IntNatural     *IntNatural     `xml:"natural"`
 	IntPositive    *IntPositive    `xml:"positive"`
 	IntInteger     *IntInteger     `xml:"integer"`
+	StringSort     *StringSort     `xml:"string"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -54,6 +55,7 @@ type HLProductSort struct {
 	IntNatural     []IntNatural     `xml:"natural"`           // optional
 	IntPositive    []IntPositive    `xml:"positive"`          // optional
 	IntInteger     []IntInteger     `xml:"integer"`           // optional
+	StringSort     []StringSort     `xml:"string"`            // optional
 	//<ref name="BuiltInSort"/>  0 or more
 	MultisetSort []HLMultisetSort `xml:"multisetsort"` // optional
 	ProductSort  []HLProductSort  `xml:"productsort"`  // optional
@@ -130,46 +132,55 @@ type HLAnnotation struct {
 
 type HLTerm struct {
 	// choice
-	Variable              *HLVariable            `xml:"variable"`
-	Equality              *BoolEquality          `xml:"equality"`
-	Inequality            *BoolInequality        `xml:"inequality"`
-	And                   *BoolAnd               `xml:"and"`
-	Or                    *BoolOr                `xml:"or"`
-	Imply                 *BoolImply             `xml:"imply"`
-	Not                   *BoolNot               `xml:"not"`
-	Predecessor           *CyclicEnumPredecessor `xml:"predecessor"`
-	Successor             *CyclicEnumSuccessor   `xml:"successor"`
-	FIRLessThan           *FIRLessThan           `xml:"lessthan"`
-	FIRLessThanOrEqual    *FIRLessThanOrEqual    `xml:"lessthanorequal"`
-	FIRGreaterThan        *FIRGreaterThan        `xml:"greaterthan"`
-	FIRGreaterThanOrEqual *FIRGreaterThanOrEqual `xml:"greaterthanorequal"`
-	MultisetCardinality   *MultisetCardinality   `xml:"cardinality"`
-	MultisetCardinalityOf *MultisetCardinalityOf `xml:"cardinalityof"`
-	MultisetContains      *MultisetContains      `xml:"contains"`
-	PartitionLessThan     *PartitionLessThan     `xml:"ltp"`
-	PartitionGreaterThan  *PartitionGreaterThan  `xml:"gtp"`
-	PartitionElementOf    *PartitionElementOf    `xml:"partitionelementof"`
-	ListAppend            *ListAppend            `xml:"listappend"`
-	ListConcatenation     *ListConcatenation     `xml:"listconcatenation"`
-	ListMake              *ListMake              `xml:"makelist"`
-	ListLength            *ListLength            `xml:"listlength"`
-	ListMemberAtIndex     *ListMemberAtIndex     `xml:"memberatindex"`
-	ListSublist           *ListSublist           `xml:"sublist"`
-	IntAddition           *IntAddition           `xml:"addition"`
-	IntSubtraction        *IntSubtraction        `xml:"subtraction"`
-	IntMultiplication     *IntMultiplication     `xml:"mult"`
-	IntDivision           *IntDivision           `xml:"div"`
-	IntModulo             *IntModulo             `xml:"mod"`
-	IntGreaterThan        *IntGreaterThan        `xml:"gt"`
-	IntGreaterThanOrEqual *IntGreaterThanOrEqual `xml:"geq"`
-	IntLessThan           *IntLessThan           `xml:"lt"`
-	IntLessThanOrEqual    *IntLessThanOrEqual    `xml:"leq"`
+	Variable                 *HLVariable               `xml:"variable"`
+	Equality                 *BoolEquality             `xml:"equality"`
+	Inequality               *BoolInequality           `xml:"inequality"`
+	And                      *BoolAnd                  `xml:"and"`
+	Or                       *BoolOr                   `xml:"or"`
+	Imply                    *BoolImply                `xml:"imply"`
+	Not                      *BoolNot                  `xml:"not"`
+	Predecessor              *CyclicEnumPredecessor    `xml:"predecessor"`
+	Successor                *CyclicEnumSuccessor      `xml:"successor"`
+	FIRLessThan              *FIRLessThan              `xml:"lessthan"`
+	FIRLessThanOrEqual       *FIRLessThanOrEqual       `xml:"lessthanorequal"`
+	FIRGreaterThan           *FIRGreaterThan           `xml:"greaterthan"`
+	FIRGreaterThanOrEqual    *FIRGreaterThanOrEqual    `xml:"greaterthanorequal"`
+	MultisetCardinality      *MultisetCardinality      `xml:"cardinality"`
+	MultisetCardinalityOf    *MultisetCardinalityOf    `xml:"cardinalityof"`
+	MultisetContains         *MultisetContains         `xml:"contains"`
+	PartitionLessThan        *PartitionLessThan        `xml:"ltp"`
+	PartitionGreaterThan     *PartitionGreaterThan     `xml:"gtp"`
+	PartitionElementOf       *PartitionElementOf       `xml:"partitionelementof"`
+	ListAppend               *ListAppend               `xml:"listappend"`
+	ListConcatenation        *ListConcatenation        `xml:"listconcatenation"`
+	ListMake                 *ListMake                 `xml:"makelist"`
+	ListLength               *ListLength               `xml:"listlength"`
+	ListMemberAtIndex        *ListMemberAtIndex        `xml:"memberatindex"`
+	ListSublist              *ListSublist              `xml:"sublist"`
+	IntAddition              *IntAddition              `xml:"addition"`
+	IntSubtraction           *IntSubtraction           `xml:"subtraction"`
+	IntMultiplication        *IntMultiplication        `xml:"mult"`
+	IntDivision              *IntDivision              `xml:"div"`
+	IntModulo                *IntModulo                `xml:"mod"`
+	IntGreaterThan           *IntGreaterThan           `xml:"gt"`
+	IntGreaterThanOrEqual    *IntGreaterThanOrEqual    `xml:"geq"`
+	IntLessThan              *IntLessThan              `xml:"lt"`
+	IntLessThanOrEqual       *IntLessThanOrEqual       `xml:"leq"`
+	StringLessThan           *StringLessThan           `xml:"lts"`
+	StringLessThanOrEqual    *StringLessThanOrEqual    `xml:"leqs"`
+	StringGreaterThan        *StringGreaterThan        `xml:"gts"`
+	StringGreaterThanOrEqual *StringGreaterThanOrEqual `xml:"geqs"`
+	StringConcatenation      *StringConcatenation      `xml:"stringconcatenation"`
+	StringAppend             *StringAppend             `xml:"stringappend"`
+	StringLength             *StringLength             `xml:"stringlength"`
+	StringSubstring          *StringSubstring          `xml:"substring"`
 	//<ref name="BuiltInOperator"/>
 	BoolConstant      *BoolConstant      `xml:"booleanconstant"`
 	FIRConstant       *FIRConstant       `xml:"finiteintrangeconstant"`
 	DotConstant       *DotConstant       `xml:"dotconstant"`
 	ListEmptyConstant *ListEmpty         `xml:"emptylist"`
 	IntNumberConstant *IntNumberConstant `xml:"numberconstant"`
+	StringConstant    *StringConstant    `xml:"stringconstant"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           *MultisetAdd           `xml:"add"`
 	MultisetAll           *MultisetAll           `xml:"all"`
@@ -361,46 +372,55 @@ type PartitionElement struct {
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
 	// choice of one or more
-	Variable              []HLVariable            `xml:"variable"`
-	Equality              []BoolEquality          `xml:"equality"`
-	Inequality            []BoolInequality        `xml:"inequality"`
-	And                   []BoolAnd               `xml:"and"`
-	Or                    []BoolOr                `xml:"or"`
-	Imply                 []BoolImply             `xml:"imply"`
-	Not                   []BoolNot               `xml:"not"`
-	Predecessor           []CyclicEnumPredecessor `xml:"predecessor"`
-	Successor             []CyclicEnumSuccessor   `xml:"successor"`
-	FIRLessThan           []FIRLessThan           `xml:"lessthan"`
-	FIRLessThanOrEqual    []FIRLessThanOrEqual    `xml:"lessthanorequal"`
-	FIRGreaterThan        []FIRGreaterThan        `xml:"greaterthan"`
-	FIRGreaterThanOrEqual []FIRGreaterThanOrEqual `xml:"greaterthanorequal"`
-	MultisetCardinality   []MultisetCardinality   `xml:"cardinality"`
-	MultisetCardinalityOf []MultisetCardinalityOf `xml:"cardinalityof"`
-	MultisetContains      []MultisetContains      `xml:"contains"`
-	PartitionLessThan     []PartitionLessThan     `xml:"ltp"`
-	PartitionGreaterThan  []PartitionGreaterThan  `xml:"gtp"`
-	PartitionElementOf    []PartitionElementOf    `xml:"partitionelementof"`
-	ListAppend            []ListAppend            `xml:"listappend"`
-	ListConcatenation     []ListConcatenation     `xml:"listconcatenation"`
-	ListMake              []ListMake              `xml:"makelist"`
-	ListLength            []ListLength            `xml:"listlength"`
-	ListMemberAtIndex     []ListMemberAtIndex     `xml:"memberatindex"`
-	ListSublist           []ListSublist           `xml:"sublist"`
-	IntAddition           []IntAddition           `xml:"addition"`
-	IntSubtraction        []IntSubtraction        `xml:"subtraction"`
-	IntMultiplication     []IntMultiplication     `xml:"mult"`
-	IntDivision           []IntDivision           `xml:"div"`
-	IntModulo             []IntModulo             `xml:"mod"`
-	IntGreaterThan        []IntGreaterThan        `xml:"gt"`
-	IntGreaterThanOrEqual []IntGreaterThanOrEqual `xml:"geq"`
-	IntLessThan           []IntLessThan           `xml:"lt"`
-	IntLessThanOrEqual    []IntLessThanOrEqual    `xml:"leq"`
+	Variable                 []HLVariable               `xml:"variable"`
+	Equality                 []BoolEquality             `xml:"equality"`
+	Inequality               []BoolInequality           `xml:"inequality"`
+	And                      []BoolAnd                  `xml:"and"`
+	Or                       []BoolOr                   `xml:"or"`
+	Imply                    []BoolImply                `xml:"imply"`
+	Not                      []BoolNot                  `xml:"not"`
+	Predecessor              []CyclicEnumPredecessor    `xml:"predecessor"`
+	Successor                []CyclicEnumSuccessor      `xml:"successor"`
+	FIRLessThan              []FIRLessThan              `xml:"lessthan"`
+	FIRLessThanOrEqual       []FIRLessThanOrEqual       `xml:"lessthanorequal"`
+	FIRGreaterThan           []FIRGreaterThan           `xml:"greaterthan"`
+	FIRGreaterThanOrEqual    []FIRGreaterThanOrEqual    `xml:"greaterthanorequal"`
+	MultisetCardinality      []MultisetCardinality      `xml:"cardinality"`
+	MultisetCardinalityOf    []MultisetCardinalityOf    `xml:"cardinalityof"`
+	MultisetContains         []MultisetContains         `xml:"contains"`
+	PartitionLessThan        []PartitionLessThan        `xml:"ltp"`
+	PartitionGreaterThan     []PartitionGreaterThan     `xml:"gtp"`
+	PartitionElementOf       []PartitionElementOf       `xml:"partitionelementof"`
+	ListAppend               []ListAppend               `xml:"listappend"`
+	ListConcatenation        []ListConcatenation        `xml:"listconcatenation"`
+	ListMake                 []ListMake                 `xml:"makelist"`
+	ListLength               []ListLength               `xml:"listlength"`
+	ListMemberAtIndex        []ListMemberAtIndex        `xml:"memberatindex"`
+	ListSublist              []ListSublist              `xml:"sublist"`
+	IntAddition              []IntAddition              `xml:"addition"`
+	IntSubtraction           []IntSubtraction           `xml:"subtraction"`
+	IntMultiplication        []IntMultiplication        `xml:"mult"`
+	IntDivision              []IntDivision              `xml:"div"`
+	IntModulo                []IntModulo                `xml:"mod"`
+	IntGreaterThan           []IntGreaterThan           `xml:"gt"`
+	IntGreaterThanOrEqual    []IntGreaterThanOrEqual    `xml:"geq"`
+	IntLessThan              []IntLessThan              `xml:"lt"`
+	IntLessThanOrEqual       []IntLessThanOrEqual       `xml:"leq"`
+	StringLessThan           []StringLessThan           `xml:"lts"`
+	StringLessThanOrEqual    []StringLessThanOrEqual    `xml:"leqs"`
+	StringGreaterThan        []StringGreaterThan        `xml:"gts"`
+	StringGreaterThanOrEqual []StringGreaterThanOrEqual `xml:"geqs"`
+	StringConcatenation      []StringConcatenation      `xml:"stringconcatenation"`
+	StringAppend             []StringAppend             `xml:"stringappend"`
+	StringLength             []StringLength             `xml:"stringlength"`
+	StringSubstring          []StringSubstring          `xml:"substring"`
 	//<ref name="BuiltInOperator"/>
 	BoolConstant      []BoolConstant      `xml:"booleanconstant"`
 	FIRConstant       []FIRConstant       `xml:"finiteintrangeconstant"`
 	DotConstant       []DotConstant       `xml:"dotconstant"`
 	ListEmptyConstant []ListEmpty         `xml:"emptylist"`
 	IntNumberConstant []IntNumberConstant `xml:"numberconstant"`
+	StringConstant    []StringConstant    `xml:"stringconstant"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           []MultisetAdd           `xml:"add"`
 	MultisetAll           []MultisetAll           `xml:"all"`
@@ -544,4 +564,58 @@ type IntNumberConstant struct {
 	IntPositive *IntPositive `xml:"positive"`
 	IntInteger  *IntInteger  `xml:"integer"`
 	// end choice
+}
+
+// Strings
+
+type StringSort struct {
+	XMLName xml.Name `xml:"string"`
+}
+
+type StringLessThan struct {
+	XMLName xml.Name `xml:"lts"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringLessThanOrEqual struct {
+	XMLName xml.Name `xml:"leqs"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringGreaterThan struct {
+	XMLName xml.Name `xml:"gts"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringGreaterThanOrEqual struct {
+	XMLName xml.Name `xml:"geqs"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringConcatenation struct {
+	XMLName xml.Name `xml:"stringconcatenation"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringAppend struct {
+	XMLName xml.Name `xml:"stringappend"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringLength struct {
+	XMLName xml.Name `xml:"stringlength"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringSubstring struct {
+	XMLName xml.Name `xml:"substring"`
+	Start   *uint    `xml:"start,attr"`
+	Length  *uint    `xml:"length,attr"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type StringConstant struct {
+	XMLName xml.Name `xml:"stringconstant"`
+	Value   *string  `xml:"value>text"`
+	Terms   []HLTerm `xml:"subterm"` // optional
 }
