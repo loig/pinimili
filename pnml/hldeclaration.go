@@ -3,11 +3,12 @@ package pnml
 import "encoding/xml"
 
 type HLDeclaration struct {
-	XMLName              xml.Name                `xml:"declaration"`
-	Info                 *string                 `xml:"text"`                                 // optional
-	SortDeclarations     []HLSortDeclaration     `xml:"structure>declarations>namedsort"`     // optional
-	VariableDeclarations []HLVariableDeclaration `xml:"structure>declarations>variabledecl"`  // optional
-	OperatorDeclarations []HLOperatorDeclaration `xml:"structure>declarations>namedoperator"` // optional
+	XMLName                xml.Name                `xml:"declaration"`
+	Info                   *string                 `xml:"text"`                                 // optional
+	SortDeclarations       []HLSortDeclaration     `xml:"structure>declarations>namedsort"`     // optional
+	VariableDeclarations   []HLVariableDeclaration `xml:"structure>declarations>variabledecl"`  // optional
+	OperatorDeclarations   []HLOperatorDeclaration `xml:"structure>declarations>namedoperator"` // optional
+	FEConstantDeclarations []FEConstant            `xml:"structure>declarations>feconstant"`    // optional
 }
 
 type HLVariableDeclaration struct {
@@ -15,7 +16,10 @@ type HLVariableDeclaration struct {
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
 	// start choice
-	BoolSort *BoolSort `xml:"bool"`
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -26,7 +30,10 @@ type HLVariableDeclaration struct {
 type HLMultisetSort struct {
 	XMLName xml.Name `xml:"multisetsort"`
 	// start choice
-	BoolSort *BoolSort `xml:"bool"`
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -35,8 +42,11 @@ type HLMultisetSort struct {
 }
 
 type HLProductSort struct {
-	XMLName  xml.Name   `xml:"productsort"`
-	BoolSort []BoolSort `xml:"bool"` // optional
+	XMLName        xml.Name         `xml:"productsort"`
+	BoolSort       []BoolSort       `xml:"bool"`              // optional
+	FESort         []FESort         `xml:"finiteenumeration"` // optional
+	CyclicEnumSort []CyclicEnumSort `xml:"cyclicenumeration"` // optional
+	FIRSort        []FIRSort        `xml:"finiteintrange"`    // optional
 	//<ref name="BuiltInSort"/>  0 or more
 	MultisetSort []HLMultisetSort `xml:"multisetsort"` // optional
 	ProductSort  []HLProductSort  `xml:"productsort"`  // optional
@@ -53,7 +63,10 @@ type HLSortDeclaration struct {
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
 	// start choice
-	BoolSort *BoolSort `xml:"bool"`
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -91,7 +104,10 @@ type HLType struct {
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
 	// start choice
-	BoolSort *BoolSort `xml:"structure>bool"` // optional
+	BoolSort       *BoolSort       `xml:"structure>bool"`              // optional
+	FESort         *FESort         `xml:"structure>finiteenumeration"` // optional
+	CyclicEnumSort *CyclicEnumSort `xml:"structure>cyclicenumeration"` // optional
+	FIRSort        *FIRSort        `xml:"structure>finiteintrange"`    // optional
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"structure>multisetsort"` // optional
 	ProductSort  *HLProductSort  `xml:"structure>productsort"`  // optional
@@ -125,15 +141,22 @@ type HLAnnotation struct {
 
 type HLTerm struct {
 	// choice
-	Variable   *HLVariable     `xml:"variable"`
-	Equality   *BoolEquality   `xml:"equality"`
-	Inequality *BoolInequality `xml:"inequality"`
-	And        *BoolAnd        `xml:"and"`
-	Or         *BoolOr         `xml:"or"`
-	Imply      *BoolImply      `xml:"imply"`
-	Not        *BoolNot        `xml:"not"`
+	Variable              *HLVariable            `xml:"variable"`
+	Equality              *BoolEquality          `xml:"equality"`
+	Inequality            *BoolInequality        `xml:"inequality"`
+	And                   *BoolAnd               `xml:"and"`
+	Or                    *BoolOr                `xml:"or"`
+	Imply                 *BoolImply             `xml:"imply"`
+	Not                   *BoolNot               `xml:"not"`
+	Predecessor           *CyclicEnumPredecessor `xml:"predecessor"`
+	Successor             *CyclicEnumSuccessor   `xml:"successor"`
+	FIRLessThan           *FIRLessThan           `xml:"lessthan"`
+	FIRLessThanOrEqual    *FIRLessThanOrEqual    `xml:"lessthanorequal"`
+	FIRGreaterThan        *FIRGreaterThan        `xml:"greaterthan"`
+	FIRGreaterThanOrEqual *FIRGreaterThanOrEqual `xml:"greaterthanorequal"`
 	//<ref name="BuiltInOperator"/>
-	Boolean *BoolConstant `xml:"booleanconstant"`
+	BoolConstant *BoolConstant `xml:"booleanconstant"`
+	FIRConstant  *FIRConstant  `xml:"finiteintrangeconstant"`
 	//<ref name="BuiltInConstant"/>
 	//<ref name="MultisetOperator"/>
 	TupleOperator *HLTupleOperator `xml:"tuple"`
@@ -175,8 +198,74 @@ type BoolNot struct {
 type BoolConstant struct {
 	XMLName xml.Name `xml:"booleanconstant"`
 	Value   bool     `xml:"value,attr"`
+	Terms   []HLTerm `xml:"subterm"` // optional
 }
 
 type BoolSort struct {
 	XMLName xml.Name `xml:"bool"`
+}
+
+// Finite enumeration
+
+type FEConstant struct {
+	XMLName xml.Name `xml:"feconstant"`
+	ID      *string  `xml:"id,attr"`
+	Name    *string  `xml:"name,attr"`
+}
+
+type FESort struct {
+	XMLName   xml.Name     `xml:"finiteenumeration"`
+	Constants []FEConstant `xml:"feconstant"` // optional
+}
+
+// Cyclic enumeration
+
+type CyclicEnumSort struct {
+	XMLName   xml.Name     `xml:"cyclicenumeration"`
+	Constants []FEConstant `xml:"feconstant"` // optional
+}
+
+type CyclicEnumSuccessor struct {
+	XMLName xml.Name `xml:"successor"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type CyclicEnumPredecessor struct {
+	XMLName xml.Name `xml:"predecessor"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+// Finite integer ranges
+
+type FIRSort struct {
+	XMLName xml.Name `xml:"finiteintrange"`
+	Start   *int     `xml:"start,attr"`
+	End     *int     `xml:"end,attr"`
+}
+
+type FIRLessThan struct {
+	XMLName xml.Name `xml:"lessthan"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type FIRLessThanOrEqual struct {
+	XMLName xml.Name `xml:"lessthanorequal"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type FIRGreaterThan struct {
+	XMLName xml.Name `xml:"greaterthan"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type FIRGreaterThanOrEqual struct {
+	XMLName xml.Name `xml:"greaterthanorequal"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type FIRConstant struct {
+	XMLName xml.Name `xml:"finiteintrangeconstant"`
+	Value   *int     `xml:"value,attr"`
+	FIRSort *FIRSort `xml:"finiteintrange"`
+	Terms   []HLTerm `xml:"subterm"` // optional
 }
