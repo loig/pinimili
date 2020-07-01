@@ -21,6 +21,9 @@ type HLSort struct {
 	FIRSort        *FIRSort        `xml:"finiteintrange"`
 	DotSort        *DotSort        `xml:"dot"`
 	ListSort       *ListSort       `xml:"list"`
+	IntNatural     *IntNatural     `xml:"natural"`
+	IntPositive    *IntPositive    `xml:"positive"`
+	IntInteger     *IntInteger     `xml:"integer"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -47,6 +50,10 @@ type HLProductSort struct {
 	CyclicEnumSort []CyclicEnumSort `xml:"cyclicenumeration"` // optional
 	FIRSort        []FIRSort        `xml:"finiteintrange"`    // optional
 	DotSort        []DotSort        `xml:"dot"`               // optional
+	ListSort       []ListSort       `xml:"list"`              // optional
+	IntNatural     []IntNatural     `xml:"natural"`           // optional
+	IntPositive    []IntPositive    `xml:"positive"`          // optional
+	IntInteger     []IntInteger     `xml:"integer"`           // optional
 	//<ref name="BuiltInSort"/>  0 or more
 	MultisetSort []HLMultisetSort `xml:"multisetsort"` // optional
 	ProductSort  []HLProductSort  `xml:"productsort"`  // optional
@@ -148,11 +155,21 @@ type HLTerm struct {
 	ListLength            *ListLength            `xml:"listlength"`
 	ListMemberAtIndex     *ListMemberAtIndex     `xml:"memberatindex"`
 	ListSublist           *ListSublist           `xml:"sublist"`
+	IntAddition           *IntAddition           `xml:"addition"`
+	IntSubtraction        *IntSubtraction        `xml:"subtraction"`
+	IntMultiplication     *IntMultiplication     `xml:"mult"`
+	IntDivision           *IntDivision           `xml:"div"`
+	IntModulo             *IntModulo             `xml:"mod"`
+	IntGreaterThan        *IntGreaterThan        `xml:"gt"`
+	IntGreaterThanOrEqual *IntGreaterThanOrEqual `xml:"geq"`
+	IntLessThan           *IntLessThan           `xml:"lt"`
+	IntLessThanOrEqual    *IntLessThanOrEqual    `xml:"leq"`
 	//<ref name="BuiltInOperator"/>
-	BoolConstant      *BoolConstant `xml:"booleanconstant"`
-	FIRConstant       *FIRConstant  `xml:"finiteintrangeconstant"`
-	DotConstant       *DotConstant  `xml:"dotconstant"`
-	ListEmptyConstant *ListEmpty    `xml:"emptylist"`
+	BoolConstant      *BoolConstant      `xml:"booleanconstant"`
+	FIRConstant       *FIRConstant       `xml:"finiteintrangeconstant"`
+	DotConstant       *DotConstant       `xml:"dotconstant"`
+	ListEmptyConstant *ListEmpty         `xml:"emptylist"`
+	IntNumberConstant *IntNumberConstant `xml:"numberconstant"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           *MultisetAdd           `xml:"add"`
 	MultisetAll           *MultisetAll           `xml:"all"`
@@ -369,11 +386,21 @@ type PartitionElement struct {
 	ListLength            []ListLength            `xml:"listlength"`
 	ListMemberAtIndex     []ListMemberAtIndex     `xml:"memberatindex"`
 	ListSublist           []ListSublist           `xml:"sublist"`
+	IntAddition           []IntAddition           `xml:"addition"`
+	IntSubtraction        []IntSubtraction        `xml:"subtraction"`
+	IntMultiplication     []IntMultiplication     `xml:"mult"`
+	IntDivision           []IntDivision           `xml:"div"`
+	IntModulo             []IntModulo             `xml:"mod"`
+	IntGreaterThan        []IntGreaterThan        `xml:"gt"`
+	IntGreaterThanOrEqual []IntGreaterThanOrEqual `xml:"geq"`
+	IntLessThan           []IntLessThan           `xml:"lt"`
+	IntLessThanOrEqual    []IntLessThanOrEqual    `xml:"leq"`
 	//<ref name="BuiltInOperator"/>
-	BoolConstant      []BoolConstant `xml:"booleanconstant"`
-	FIRConstant       []FIRConstant  `xml:"finiteintrangeconstant"`
-	DotConstant       []DotConstant  `xml:"dotconstant"`
-	ListEmptyConstant []ListEmpty    `xml:"emptylist"`
+	BoolConstant      []BoolConstant      `xml:"booleanconstant"`
+	FIRConstant       []FIRConstant       `xml:"finiteintrangeconstant"`
+	DotConstant       []DotConstant       `xml:"dotconstant"`
+	ListEmptyConstant []ListEmpty         `xml:"emptylist"`
+	IntNumberConstant []IntNumberConstant `xml:"numberconstant"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           []MultisetAdd           `xml:"add"`
 	MultisetAll           []MultisetAll           `xml:"all"`
@@ -447,4 +474,74 @@ type ListEmpty struct {
 	XMLName xml.Name `xml:"emptylist"`
 	HLSort
 	Terms []HLTerm `xml:"subterm"` // optional
+}
+
+// Integers
+
+type IntNatural struct {
+	XMLName xml.Name `xml:"natural"`
+}
+
+type IntPositive struct {
+	XMLName xml.Name `xml:"positive"`
+}
+
+type IntInteger struct {
+	XMLName xml.Name `xml:"integer"`
+}
+
+type IntAddition struct {
+	XMLName xml.Name `xml:"addition"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntSubtraction struct {
+	XMLName xml.Name `xml:"subtraction"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntMultiplication struct {
+	XMLName xml.Name `xml:"mult"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntDivision struct {
+	XMLName xml.Name `xml:"div"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntModulo struct {
+	XMLName xml.Name `xml:"mod"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntGreaterThan struct {
+	XMLName xml.Name `xml:"gt"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntGreaterThanOrEqual struct {
+	XMLName xml.Name `xml:"geq"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntLessThan struct {
+	XMLName xml.Name `xml:"lt"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntLessThanOrEqual struct {
+	XMLName xml.Name `xml:"leq"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type IntNumberConstant struct {
+	XMLName xml.Name `xml:"numberconstant"`
+	Value   int      `xml:"value,attr"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+	// choice
+	IntNatural  *IntNatural  `xml:"natural"`
+	IntPositive *IntPositive `xml:"positive"`
+	IntInteger  *IntInteger  `xml:"integer"`
+	// end choice
 }
