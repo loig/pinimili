@@ -20,6 +20,7 @@ type HLSort struct {
 	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
 	FIRSort        *FIRSort        `xml:"finiteintrange"`
 	DotSort        *DotSort        `xml:"dot"`
+	ListSort       *ListSort       `xml:"list"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -138,13 +139,20 @@ type HLTerm struct {
 	MultisetCardinality   *MultisetCardinality   `xml:"cardinality"`
 	MultisetCardinalityOf *MultisetCardinalityOf `xml:"cardinalityof"`
 	MultisetContains      *MultisetContains      `xml:"contains"`
-	PartitionLessThan     []PartitionLessThan    `xml:"ltp"`
-	PartitionGreaterThan  []PartitionGreaterThan `xml:"gtp"`
-	PartitionElementOf    []PartitionElementOf   `xml:"partitionelementof"`
+	PartitionLessThan     *PartitionLessThan     `xml:"ltp"`
+	PartitionGreaterThan  *PartitionGreaterThan  `xml:"gtp"`
+	PartitionElementOf    *PartitionElementOf    `xml:"partitionelementof"`
+	ListAppend            *ListAppend            `xml:"listappend"`
+	ListConcatenation     *ListConcatenation     `xml:"listconcatenation"`
+	ListMake              *ListMake              `xml:"makelist"`
+	ListLength            *ListLength            `xml:"listlength"`
+	ListMemberAtIndex     *ListMemberAtIndex     `xml:"memberatindex"`
+	ListSublist           *ListSublist           `xml:"sublist"`
 	//<ref name="BuiltInOperator"/>
-	BoolConstant *BoolConstant `xml:"booleanconstant"`
-	FIRConstant  *FIRConstant  `xml:"finiteintrangeconstant"`
-	DotConstant  *DotConstant  `xml:"dotconstant"`
+	BoolConstant      *BoolConstant `xml:"booleanconstant"`
+	FIRConstant       *FIRConstant  `xml:"finiteintrangeconstant"`
+	DotConstant       *DotConstant  `xml:"dotconstant"`
+	ListEmptyConstant *ListEmpty    `xml:"emptylist"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           *MultisetAdd           `xml:"add"`
 	MultisetAll           *MultisetAll           `xml:"all"`
@@ -355,10 +363,17 @@ type PartitionElement struct {
 	PartitionLessThan     []PartitionLessThan     `xml:"ltp"`
 	PartitionGreaterThan  []PartitionGreaterThan  `xml:"gtp"`
 	PartitionElementOf    []PartitionElementOf    `xml:"partitionelementof"`
+	ListAppend            []ListAppend            `xml:"listappend"`
+	ListConcatenation     []ListConcatenation     `xml:"listconcatenation"`
+	ListMake              []ListMake              `xml:"makelist"`
+	ListLength            []ListLength            `xml:"listlength"`
+	ListMemberAtIndex     []ListMemberAtIndex     `xml:"memberatindex"`
+	ListSublist           []ListSublist           `xml:"sublist"`
 	//<ref name="BuiltInOperator"/>
-	BoolConstant []BoolConstant `xml:"booleanconstant"`
-	FIRConstant  []FIRConstant  `xml:"finiteintrangeconstant"`
-	DotConstant  []DotConstant  `xml:"dotconstant"`
+	BoolConstant      []BoolConstant `xml:"booleanconstant"`
+	FIRConstant       []FIRConstant  `xml:"finiteintrangeconstant"`
+	DotConstant       []DotConstant  `xml:"dotconstant"`
+	ListEmptyConstant []ListEmpty    `xml:"emptylist"`
 	//<ref name="BuiltInConstant"/>
 	MultisetAdd           []MultisetAdd           `xml:"add"`
 	MultisetAll           []MultisetAll           `xml:"all"`
@@ -383,6 +398,53 @@ type PartitionGreaterThan struct {
 
 type PartitionElementOf struct {
 	XMLName xml.Name `xml:"partitionelementof"`
-	Ref     string   `xml:"refpartition"` // data of type IDREF
-	Terms   []HLTerm `xml:"subterm"`      // optional
+	Ref     string   `xml:"refpartition,attr"` // data of type IDREF
+	Terms   []HLTerm `xml:"subterm"`           // optional
+}
+
+// Lists
+
+type ListSort struct {
+	XMLName xml.Name `xml:"list"`
+	HLSort
+}
+
+type ListAppend struct {
+	XMLName xml.Name `xml:"listappend"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type ListConcatenation struct {
+	XMLName xml.Name `xml:"listconcatenation"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type ListMake struct {
+	XMLName xml.Name `xml:"makelist"`
+	HLSort
+	Terms []HLTerm `xml:"subterm"` // optional
+}
+
+type ListLength struct {
+	XMLName xml.Name `xml:"listlength"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type ListMemberAtIndex struct {
+	XMLName xml.Name `xml:"memberatindex"`
+	Index   uint     `xml:"index,attr"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type ListSublist struct {
+	XMLName xml.Name `xml:"sublist"`
+	Start   uint     `xml:"start,attr"`
+	Length  uint     `xml:"length,attr"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type ListEmpty struct {
+	XMLName xml.Name `xml:"emptylist"`
+	HLSort
+	Terms []HLTerm `xml:"subterm"` // optional
 }
