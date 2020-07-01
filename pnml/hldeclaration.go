@@ -159,11 +159,20 @@ type HLTerm struct {
 	FIRLessThanOrEqual    *FIRLessThanOrEqual    `xml:"lessthanorequal"`
 	FIRGreaterThan        *FIRGreaterThan        `xml:"greaterthan"`
 	FIRGreaterThanOrEqual *FIRGreaterThanOrEqual `xml:"greaterthanorequal"`
+	MultisetCardinality   *MultisetCardinality   `xml:"cardinality"`
+	MultisetCardinalityOf *MultisetCardinalityOf `xml:"cardinalityof"`
+	MultisetContains      *MultisetContains      `xml:"contains"`
 	//<ref name="BuiltInOperator"/>
 	BoolConstant *BoolConstant `xml:"booleanconstant"`
 	FIRConstant  *FIRConstant  `xml:"finiteintrangeconstant"`
 	DotConstant  *DotConstant  `xml:"dotconstant"`
 	//<ref name="BuiltInConstant"/>
+	MultisetAdd           *MultisetAdd           `xml:"add"`
+	MultisetAll           *MultisetAll           `xml:"all"`
+	MultisetNumberOf      *MultisetNumberOf      `xml:"numberof"`
+	MultisetSubtract      *MultisetSubtract      `xml:"subtract"`
+	MultisetScalarProduct *MultisetScalarProduct `xml:"scalarproduct"`
+	MultisetEmpty         *MultisetEmpty         `xml:"empty"`
 	//<ref name="MultisetOperator"/>
 	TupleOperator *HLTupleOperator `xml:"tuple"`
 	UserOperator  *HLUserOperator  `xml:"useroperator"`
@@ -284,4 +293,73 @@ type DotSort struct {
 
 type DotConstant struct {
 	XMLName xml.Name `xml:"dotconstant"`
+}
+
+// Multisets
+
+type MultisetCardinality struct {
+	XMLName xml.Name `xml:"cardinality"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetCardinalityOf struct {
+	XMLName xml.Name `xml:"cardinalityof"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetContains struct {
+	XMLName xml.Name `xml:"contains"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetAdd struct {
+	XMLName xml.Name `xml:"add"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetSubtract struct {
+	XMLName xml.Name `xml:"subtract"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetAll struct {
+	XMLName xml.Name `xml:"all"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+	// start choice
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
+	//<ref name="BuiltInSort"/>
+	MultisetSort *HLMultisetSort `xml:"multisetsort"`
+	ProductSort  *HLProductSort  `xml:"productsort"`
+	UserSort     *HLUserSort     `xml:"usersort"`
+	// end choice
+}
+
+type MultisetEmpty struct {
+	XMLName xml.Name `xml:"empty"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+	// start choice
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
+	//<ref name="BuiltInSort"/>
+	MultisetSort *HLMultisetSort `xml:"multisetsort"`
+	ProductSort  *HLProductSort  `xml:"productsort"`
+	UserSort     *HLUserSort     `xml:"usersort"`
+	// end choice
+}
+
+type MultisetScalarProduct struct {
+	XMLName xml.Name `xml:"scalarproduct"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type MultisetNumberOf struct {
+	XMLName xml.Name `xml:"numberof"`
+	Terms   []HLTerm `xml:"subterm"` // optional
 }
