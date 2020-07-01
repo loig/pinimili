@@ -3,44 +3,40 @@ package pnml
 import "encoding/xml"
 
 type HLDeclaration struct {
-	XMLName                xml.Name                `xml:"declaration"`
-	Info                   *string                 `xml:"text"`                                 // optional
-	SortDeclarations       []HLSortDeclaration     `xml:"structure>declarations>namedsort"`     // optional
-	VariableDeclarations   []HLVariableDeclaration `xml:"structure>declarations>variabledecl"`  // optional
-	OperatorDeclarations   []HLOperatorDeclaration `xml:"structure>declarations>namedoperator"` // optional
-	FEConstantDeclarations []FEConstant            `xml:"structure>declarations>feconstant"`    // optional
+	XMLName                        xml.Name                   `xml:"declaration"`
+	Info                           *string                    `xml:"text"`                                   // optional
+	SortDeclarations               []HLSortDeclaration        `xml:"structure>declarations>namedsort"`       // optional
+	PartitionSortDeclarations      []PartitionSortDeclaration `xml:"structure>declarations>partition"`       // optional
+	VariableDeclarations           []HLVariableDeclaration    `xml:"structure>declarations>variabledecl"`    // optional
+	OperatorDeclarations           []HLOperatorDeclaration    `xml:"structure>declarations>namedoperator"`   // optional
+	PartitionOperatorsDeclarations []PartitionElement         `xml:"structure>declaration>partitionelement"` // optional
+	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`      // optional
+}
+
+type HLSort struct {
+	// start choice
+	BoolSort       *BoolSort       `xml:"bool"`
+	FESort         *FESort         `xml:"finiteenumeration"`
+	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
+	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
+	//<ref name="BuiltInSort"/>
+	MultisetSort *HLMultisetSort `xml:"multisetsort"`
+	ProductSort  *HLProductSort  `xml:"productsort"`
+	UserSort     *HLUserSort     `xml:"usersort"`
+	// end choice
 }
 
 type HLVariableDeclaration struct {
 	XMLName xml.Name `xml:"variabledecl"`
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
+	HLSort
 }
 
 type HLMultisetSort struct {
 	XMLName xml.Name `xml:"multisetsort"`
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
+	HLSort
 }
 
 type HLProductSort struct {
@@ -65,17 +61,7 @@ type HLSortDeclaration struct {
 	XMLName xml.Name `xml:"namedsort"`
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
+	HLSort
 }
 
 type HLOperatorDeclaration struct {
@@ -107,17 +93,7 @@ type HLType struct {
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	// start choice
-	BoolSort       *BoolSort       `xml:"structure>bool"`              // optional
-	FESort         *FESort         `xml:"structure>finiteenumeration"` // optional
-	CyclicEnumSort *CyclicEnumSort `xml:"structure>cyclicenumeration"` // optional
-	FIRSort        *FIRSort        `xml:"structure>finiteintrange"`    // optional
-	DotSort        *DotSort        `xml:"structure>dot"`               // optional
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"structure>multisetsort"` // optional
-	ProductSort  *HLProductSort  `xml:"structure>productsort"`  // optional
-	UserSort     *HLUserSort     `xml:"structure>usersort"`     // optional
-	// end choice
+	Sort          *HLSort             `xml:"structure"`    // optional
 }
 
 type HLMarking struct {
@@ -162,6 +138,9 @@ type HLTerm struct {
 	MultisetCardinality   *MultisetCardinality   `xml:"cardinality"`
 	MultisetCardinalityOf *MultisetCardinalityOf `xml:"cardinalityof"`
 	MultisetContains      *MultisetContains      `xml:"contains"`
+	PartitionLessThan     []PartitionLessThan    `xml:"ltp"`
+	PartitionGreaterThan  []PartitionGreaterThan `xml:"gtp"`
+	PartitionElementOf    []PartitionElementOf   `xml:"partitionelementof"`
 	//<ref name="BuiltInOperator"/>
 	BoolConstant *BoolConstant `xml:"booleanconstant"`
 	FIRConstant  *FIRConstant  `xml:"finiteintrangeconstant"`
@@ -325,33 +304,13 @@ type MultisetSubtract struct {
 type MultisetAll struct {
 	XMLName xml.Name `xml:"all"`
 	Terms   []HLTerm `xml:"subterm"` // optional
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
+	HLSort
 }
 
 type MultisetEmpty struct {
 	XMLName xml.Name `xml:"empty"`
 	Terms   []HLTerm `xml:"subterm"` // optional
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
+	HLSort
 }
 
 type MultisetScalarProduct struct {
@@ -362,4 +321,68 @@ type MultisetScalarProduct struct {
 type MultisetNumberOf struct {
 	XMLName xml.Name `xml:"numberof"`
 	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+// Partitions
+
+type PartitionSortDeclaration struct {
+	XMLName xml.Name `xml:"partition"`
+	HLSort
+	PartitionElements []PartitionElement `xml:"partitionelement"` // one or more
+}
+
+type PartitionElement struct {
+	XMLName xml.Name `xml:"partitionelement"`
+	ID      *string  `xml:"id,attr"`
+	Name    *string  `xml:"name,attr"`
+	// choice of one or more
+	Variable              []HLVariable            `xml:"variable"`
+	Equality              []BoolEquality          `xml:"equality"`
+	Inequality            []BoolInequality        `xml:"inequality"`
+	And                   []BoolAnd               `xml:"and"`
+	Or                    []BoolOr                `xml:"or"`
+	Imply                 []BoolImply             `xml:"imply"`
+	Not                   []BoolNot               `xml:"not"`
+	Predecessor           []CyclicEnumPredecessor `xml:"predecessor"`
+	Successor             []CyclicEnumSuccessor   `xml:"successor"`
+	FIRLessThan           []FIRLessThan           `xml:"lessthan"`
+	FIRLessThanOrEqual    []FIRLessThanOrEqual    `xml:"lessthanorequal"`
+	FIRGreaterThan        []FIRGreaterThan        `xml:"greaterthan"`
+	FIRGreaterThanOrEqual []FIRGreaterThanOrEqual `xml:"greaterthanorequal"`
+	MultisetCardinality   []MultisetCardinality   `xml:"cardinality"`
+	MultisetCardinalityOf []MultisetCardinalityOf `xml:"cardinalityof"`
+	MultisetContains      []MultisetContains      `xml:"contains"`
+	PartitionLessThan     []PartitionLessThan     `xml:"ltp"`
+	PartitionGreaterThan  []PartitionGreaterThan  `xml:"gtp"`
+	PartitionElementOf    []PartitionElementOf    `xml:"partitionelementof"`
+	//<ref name="BuiltInOperator"/>
+	BoolConstant []BoolConstant `xml:"booleanconstant"`
+	FIRConstant  []FIRConstant  `xml:"finiteintrangeconstant"`
+	DotConstant  []DotConstant  `xml:"dotconstant"`
+	//<ref name="BuiltInConstant"/>
+	MultisetAdd           []MultisetAdd           `xml:"add"`
+	MultisetAll           []MultisetAll           `xml:"all"`
+	MultisetNumberOf      []MultisetNumberOf      `xml:"numberof"`
+	MultisetSubtract      []MultisetSubtract      `xml:"subtract"`
+	MultisetScalarProduct []MultisetScalarProduct `xml:"scalarproduct"`
+	MultisetEmpty         []MultisetEmpty         `xml:"empty"`
+	//<ref name="MultisetOperator"/>
+	TupleOperator []HLTupleOperator `xml:"tuple"`
+	UserOperator  []HLUserOperator  `xml:"useroperator"`
+}
+
+type PartitionLessThan struct {
+	XMLName xml.Name `xml:"ltp"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type PartitionGreaterThan struct {
+	XMLName xml.Name `xml:"gtp"`
+	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+type PartitionElementOf struct {
+	XMLName xml.Name `xml:"partitionelementof"`
+	Ref     string   `xml:"refpartition"` // data of type IDREF
+	Terms   []HLTerm `xml:"subterm"`      // optional
 }
