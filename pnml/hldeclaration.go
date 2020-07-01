@@ -20,6 +20,7 @@ type HLVariableDeclaration struct {
 	FESort         *FESort         `xml:"finiteenumeration"`
 	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
 	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -34,6 +35,7 @@ type HLMultisetSort struct {
 	FESort         *FESort         `xml:"finiteenumeration"`
 	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
 	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -47,6 +49,7 @@ type HLProductSort struct {
 	FESort         []FESort         `xml:"finiteenumeration"` // optional
 	CyclicEnumSort []CyclicEnumSort `xml:"cyclicenumeration"` // optional
 	FIRSort        []FIRSort        `xml:"finiteintrange"`    // optional
+	DotSort        []DotSort        `xml:"dot"`               // optional
 	//<ref name="BuiltInSort"/>  0 or more
 	MultisetSort []HLMultisetSort `xml:"multisetsort"` // optional
 	ProductSort  []HLProductSort  `xml:"productsort"`  // optional
@@ -67,6 +70,7 @@ type HLSortDeclaration struct {
 	FESort         *FESort         `xml:"finiteenumeration"`
 	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
 	FIRSort        *FIRSort        `xml:"finiteintrange"`
+	DotSort        *DotSort        `xml:"dot"`
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"multisetsort"`
 	ProductSort  *HLProductSort  `xml:"productsort"`
@@ -108,6 +112,7 @@ type HLType struct {
 	FESort         *FESort         `xml:"structure>finiteenumeration"` // optional
 	CyclicEnumSort *CyclicEnumSort `xml:"structure>cyclicenumeration"` // optional
 	FIRSort        *FIRSort        `xml:"structure>finiteintrange"`    // optional
+	DotSort        *DotSort        `xml:"structure>dot"`               // optional
 	//<ref name="BuiltInSort"/>
 	MultisetSort *HLMultisetSort `xml:"structure>multisetsort"` // optional
 	ProductSort  *HLProductSort  `xml:"structure>productsort"`  // optional
@@ -157,6 +162,7 @@ type HLTerm struct {
 	//<ref name="BuiltInOperator"/>
 	BoolConstant *BoolConstant `xml:"booleanconstant"`
 	FIRConstant  *FIRConstant  `xml:"finiteintrangeconstant"`
+	DotConstant  *DotConstant  `xml:"dotconstant"`
 	//<ref name="BuiltInConstant"/>
 	//<ref name="MultisetOperator"/>
 	TupleOperator *HLTupleOperator `xml:"tuple"`
@@ -268,4 +274,14 @@ type FIRConstant struct {
 	Value   *int     `xml:"value,attr"`
 	FIRSort *FIRSort `xml:"finiteintrange"`
 	Terms   []HLTerm `xml:"subterm"` // optional
+}
+
+// Dots
+
+type DotSort struct {
+	XMLName xml.Name `xml:"dot"`
+}
+
+type DotConstant struct {
+	XMLName xml.Name `xml:"dotconstant"`
 }
