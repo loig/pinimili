@@ -1,19 +1,23 @@
 package pnml
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"log"
+)
 
 type HLDeclaration struct {
 	XMLName                        xml.Name                   `xml:"declaration"`
-	Info                           *string                    `xml:"text"`                                   // optional
-	SortDeclarations               []HLSortDeclaration        `xml:"structure>declarations>namedsort"`       // optional
-	PartitionSortDeclarations      []PartitionSortDeclaration `xml:"structure>declarations>partition"`       // optional
-	VariableDeclarations           []HLVariableDeclaration    `xml:"structure>declarations>variabledecl"`    // optional
-	OperatorDeclarations           []HLOperatorDeclaration    `xml:"structure>declarations>namedoperator"`   // optional
-	PartitionOperatorsDeclarations []PartitionElement         `xml:"structure>declaration>partitionelement"` // optional
-	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`      // optional
+	Info                           *string                    `xml:"text"`                                    // optional
+	SortDeclarations               []HLSortDeclaration        `xml:"structure>declarations>namedsort"`        // optional
+	PartitionSortDeclarations      []PartitionSortDeclaration `xml:"structure>declarations>partition"`        // optional
+	VariableDeclarations           []HLVariableDeclaration    `xml:"structure>declarations>variabledecl"`     // optional
+	OperatorDeclarations           []HLOperatorDeclaration    `xml:"structure>declarations>namedoperator"`    // optional
+	PartitionOperatorsDeclarations []PartitionElement         `xml:"structure>declarations>partitionelement"` // optional
+	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLSort struct {
+/*
+type HLSort2 struct {
 	// start choice
 	BoolSort       *BoolSort       `xml:"bool"`
 	FESort         *FESort         `xml:"finiteenumeration"`
@@ -31,35 +35,211 @@ type HLSort struct {
 	UserSort     *HLUserSort     `xml:"usersort"`
 	// end choice
 }
+*/
 
 type HLVariableDeclaration struct {
 	XMLName xml.Name `xml:"variabledecl"`
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
-	HLSort
+	Sort    *HLSort  `xml:",any"`
+}
+
+func (h HLVariableDeclaration) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"variabledecl"`
+		ID      *string  `xml:"id,attr"`
+		Name    *string  `xml:"name,attr"`
+		Sort    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.ID, h.Name, h.Sort.Value}
+
+	return e.Encode(t)
 }
 
 type HLMultisetSort struct {
 	XMLName xml.Name `xml:"multisetsort"`
-	HLSort
+	Sort    *HLSort  `xml:",any"`
+}
+
+func (h HLMultisetSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"multisetsort"`
+		Sort    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.Sort.Value}
+
+	return e.Encode(t)
+}
+
+type HLSort struct {
+	Type  string `xml:"-"`
+	Value interface{}
+}
+
+/*
+func (h *HLSort) CustomEncode(e *xml.Encoder) error {
+	fmt.Println("Plop:", h.Type)
+	switch h.Type {
+	case "bool":
+		var sort BoolSort = h.Value.(BoolSort)
+		e.Encode(sort)
+	case "finiteenumeration":
+		var sort FESort = h.Value.(FESort)
+		e.Encode(sort)
+	case "cyclicenumeration":
+		var sort CyclicEnumSort = h.Value.(CyclicEnumSort)
+		e.Encode(sort)
+	case "finiteintrange":
+		var sort FIRSort = h.Value.(FIRSort)
+		e.Encode(sort)
+	case "dot":
+		var sort DotSort = h.Value.(DotSort)
+		e.Encode(sort)
+	case "list":
+		var sort ListSort = h.Value.(ListSort)
+		e.Encode(sort)
+	case "natural":
+		var sort IntNatural = h.Value.(IntNatural)
+		e.Encode(sort)
+	case "positive":
+		var sort IntPositive = h.Value.(IntPositive)
+		e.Encode(sort)
+	case "integer":
+		var sort IntInteger = h.Value.(IntInteger)
+		e.Encode(sort)
+	case "string":
+		var sort StringSort = h.Value.(StringSort)
+		e.Encode(sort)
+	case "multisetsort":
+		var sort HLMultisetSort = h.Value.(HLMultisetSort)
+		e.Encode(sort)
+	case "productsort":
+		var sort HLProductSort = h.Value.(HLProductSort)
+		e.Encode(sort)
+	case "usersort":
+		var sort HLUserSort = h.Value.(HLUserSort)
+		e.Encode(sort)
+	default:
+		log.Panic("HLSort Custom Encoding: Unknown sort ", h.Type)
+	}
+	return nil
+}
+*/
+
+func (h *HLSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	h.Type = start.Name.Local
+	switch h.Type {
+	// built in sorts
+	case "bool":
+		var sort BoolSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "finiteenumeration":
+		var sort FESort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "cyclicenumeration":
+		var sort CyclicEnumSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "finiteintrange":
+		var sort FIRSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "dot":
+		var sort DotSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "list":
+		var sort ListSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "natural":
+		var sort IntNatural
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "positive":
+		var sort IntPositive
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "integer":
+		var sort IntInteger
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	case "string":
+		var sort StringSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+		// multiset sort
+	case "multisetsort":
+		var sort HLMultisetSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+		// product sort
+	case "productsort":
+		var sort HLProductSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+		// user defined sort
+	case "usersort":
+		var sort HLUserSort
+		if err := d.DecodeElement(&sort, &start); err != nil {
+			return err
+		}
+		h.Value = sort
+	default:
+		log.Panic("HLSort: Unknown sort ", h.Type)
+	}
+	return nil
 }
 
 type HLProductSort struct {
-	XMLName        xml.Name         `xml:"productsort"`
-	BoolSort       []BoolSort       `xml:"bool"`              // optional
-	FESort         []FESort         `xml:"finiteenumeration"` // optional
-	CyclicEnumSort []CyclicEnumSort `xml:"cyclicenumeration"` // optional
-	FIRSort        []FIRSort        `xml:"finiteintrange"`    // optional
-	DotSort        []DotSort        `xml:"dot"`               // optional
-	ListSort       []ListSort       `xml:"list"`              // optional
-	IntNatural     []IntNatural     `xml:"natural"`           // optional
-	IntPositive    []IntPositive    `xml:"positive"`          // optional
-	IntInteger     []IntInteger     `xml:"integer"`           // optional
-	StringSort     []StringSort     `xml:"string"`            // optional
-	//<ref name="BuiltInSort"/>  0 or more
-	MultisetSort []HLMultisetSort `xml:"multisetsort"` // optional
-	ProductSort  []HLProductSort  `xml:"productsort"`  // optional
-	UserSort     []HLUserSort     `xml:"usersort"`     // optional
+	XMLName xml.Name `xml:"productsort"`
+	Sorts   []HLSort `xml:",any"` // optional
+}
+
+func (h HLProductSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	startToken := xml.StartElement{Name: xml.Name{Space: "", Local: "productsort"}}
+
+	err := e.EncodeToken(startToken)
+	if err != nil {
+		return err
+	}
+
+	for _, sort := range h.Sorts {
+		e.Encode(sort.Value)
+	}
+
+	return e.EncodeToken(startToken.End())
 }
 
 type HLUserSort struct {
@@ -71,7 +251,21 @@ type HLSortDeclaration struct {
 	XMLName xml.Name `xml:"namedsort"`
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
-	HLSort
+	Sort    *HLSort  `xml:",any"`
+}
+
+func (h HLSortDeclaration) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"namedsort"`
+		ID      *string  `xml:"id,attr"`
+		Name    *string  `xml:"name,attr"`
+		Sort    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.ID, h.Name, h.Sort.Value}
+
+	return e.Encode(t)
 }
 
 type HLOperatorDeclaration struct {
@@ -98,7 +292,7 @@ type HLUserOperator struct { // recursion forbidden
 	Terms   []HLTerm `xml:"subterm"`          // optional
 }
 
-type HLType struct {
+type HLType struct { // To be tested with the change to HLSort
 	XMLName       xml.Name            `xml:"type"`
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
@@ -363,6 +557,8 @@ type MultisetNumberOf struct {
 
 type PartitionSortDeclaration struct {
 	XMLName xml.Name `xml:"partition"`
+	ID      *string  `xml:"id,attr"`
+	Name    *string  `xml:"name,attr"`
 	HLSort
 	PartitionElements []PartitionElement `xml:"partitionelement"` // one or more
 }
