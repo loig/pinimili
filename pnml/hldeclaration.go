@@ -211,14 +211,14 @@ type HLVariable struct {
 }
 
 type HLTupleOperator struct {
-	XMLName xml.Name   `xml:"tuple"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"tuple"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type HLUserOperator struct { // recursion forbidden
-	XMLName xml.Name   `xml:"useroperator"`
-	ID      *string    `xml:"declaration,attr"` // data type="IDREF"
-	Subterm *HLSubterm `xml:"subterm"`          // optional
+	XMLName xml.Name    `xml:"useroperator"`
+	ID      *string     `xml:"declaration,attr"` // data type="IDREF"
+	Terms   []HLSubterm `xml:"subterm"`          // optional
 }
 
 type HLType struct { // To be tested with the change to HLSort
@@ -660,61 +660,57 @@ func (h *HLTerm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 type HLSubterm struct {
 	XMLName xml.Name `xml:"subterm"`
-	Terms   []HLTerm `xml:",any"`
+	Term    HLTerm   `xml:",any"`
 }
 
 func (h HLSubterm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
-	startToken := xml.StartElement{Name: xml.Name{Space: "", Local: "subterm"}}
-
-	err := e.EncodeToken(startToken)
-	if err != nil {
-		return err
+	type tmpH struct {
+		XMLName xml.Name `xml:"subterm"`
+		Term    interface{}
 	}
 
-	for _, term := range h.Terms {
-		e.Encode(term.Value)
-	}
+	t := tmpH{h.XMLName, h.Term.Value}
 
-	return e.EncodeToken(startToken.End())
+	return e.Encode(t)
 }
 
 // Booleans
 
 type BoolEquality struct {
-	XMLName xml.Name   `xml:"equality"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"equality"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolInequality struct {
-	XMLName xml.Name   `xml:"inequality"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"inequality"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolAnd struct {
-	XMLName xml.Name   `xml:"and"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"and"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolOr struct {
-	XMLName xml.Name   `xml:"or"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"or"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolImply struct {
-	XMLName xml.Name   `xml:"imply"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"imply"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolNot struct {
-	XMLName xml.Name   `xml:"not"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"not"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolConstant struct {
-	XMLName xml.Name   `xml:"booleanconstant"`
-	Value   *bool      `xml:"value,attr"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"booleanconstant"`
+	Value   *bool       `xml:"value,attr"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolSort struct {
@@ -742,13 +738,13 @@ type CyclicEnumSort struct {
 }
 
 type CyclicEnumSuccessor struct {
-	XMLName xml.Name   `xml:"successor"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"successor"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type CyclicEnumPredecessor struct {
-	XMLName xml.Name   `xml:"predecessor"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"predecessor"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 // Finite integer ranges
@@ -760,30 +756,30 @@ type FIRSort struct {
 }
 
 type FIRLessThan struct {
-	XMLName xml.Name   `xml:"lessthan"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"lessthan"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRLessThanOrEqual struct {
-	XMLName xml.Name   `xml:"lessthanorequal"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"lessthanorequal"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRGreaterThan struct {
-	XMLName xml.Name   `xml:"greaterthan"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"greaterthan"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRGreaterThanOrEqual struct {
-	XMLName xml.Name   `xml:"greaterthanorequal"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"greaterthanorequal"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRConstant struct {
-	XMLName xml.Name   `xml:"finiteintrangeconstant"`
-	Value   *int       `xml:"value,attr"`
-	FIRSort *FIRSort   `xml:"finiteintrange"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"finiteintrangeconstant"`
+	Value   *int        `xml:"value,attr"`
+	FIRSort *FIRSort    `xml:"finiteintrange"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 // Dots
@@ -799,76 +795,76 @@ type DotConstant struct {
 // Multisets
 
 type MultisetCardinality struct {
-	XMLName xml.Name   `xml:"cardinality"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"cardinality"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetCardinalityOf struct {
-	XMLName xml.Name   `xml:"cardinalityof"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"cardinalityof"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetContains struct {
-	XMLName xml.Name   `xml:"contains"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"contains"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetAdd struct {
-	XMLName xml.Name   `xml:"add"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"add"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetSubtract struct {
-	XMLName xml.Name   `xml:"subtract"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"subtract"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetAll struct {
-	XMLName xml.Name   `xml:"all"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
-	Sort    *HLSort    `xml:",any"`
+	XMLName xml.Name    `xml:"all"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
+	Sort    *HLSort     `xml:",any"`
 }
 
 func (m MultisetAll) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	type tmpM struct {
-		XMLName xml.Name   `xml:"all"`
-		Subterm *HLSubterm `xml:"subterm"`
+		XMLName xml.Name    `xml:"all"`
+		Terms   []HLSubterm `xml:"subterm"`
 		Sort    interface{}
 	}
 
-	t := tmpM{m.XMLName, m.Subterm, m.Sort.Value}
+	t := tmpM{m.XMLName, m.Terms, m.Sort.Value}
 
 	return e.Encode(t)
 }
 
 type MultisetEmpty struct {
-	XMLName xml.Name   `xml:"empty"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
-	Sort    *HLSort    `xml:",any"`
+	XMLName xml.Name    `xml:"empty"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
+	Sort    *HLSort     `xml:",any"`
 }
 
 func (m MultisetEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	type tmpM struct {
-		XMLName xml.Name   `xml:"empty"`
-		Subterm *HLSubterm `xml:"subterm"`
+		XMLName xml.Name    `xml:"empty"`
+		Terms   []HLSubterm `xml:"subterm"`
 		Sort    interface{}
 	}
 
-	t := tmpM{m.XMLName, m.Subterm, m.Sort.Value}
+	t := tmpM{m.XMLName, m.Terms, m.Sort.Value}
 
 	return e.Encode(t)
 }
 
 type MultisetScalarProduct struct {
-	XMLName xml.Name   `xml:"scalarproduct"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"scalarproduct"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetNumberOf struct {
-	XMLName xml.Name   `xml:"numberof"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"numberof"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 // Partitions
@@ -889,19 +885,19 @@ type PartitionElement struct {
 }
 
 type PartitionLessThan struct {
-	XMLName xml.Name   `xml:"ltp"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"ltp"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type PartitionGreaterThan struct {
-	XMLName xml.Name   `xml:"gtp"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"gtp"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type PartitionElementOf struct {
-	XMLName xml.Name   `xml:"partitionelementof"`
-	Ref     *string    `xml:"refpartition,attr"` // data of type IDREF
-	Subterm *HLSubterm `xml:"subterm"`           // optional
+	XMLName xml.Name    `xml:"partitionelementof"`
+	Ref     *string     `xml:"refpartition,attr"` // data of type IDREF
+	Terms   []HLSubterm `xml:"subterm"`           // optional
 }
 
 // Lists
@@ -924,19 +920,19 @@ func (l ListSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 type ListAppend struct {
-	XMLName xml.Name   `xml:"listappend"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"listappend"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type ListConcatenation struct {
-	XMLName xml.Name   `xml:"listconcatenation"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"listconcatenation"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type ListMake struct {
-	XMLName xml.Name   `xml:"makelist"`
-	Sort    *HLSort    `xml:",any"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"makelist"`
+	Sort    *HLSort     `xml:",any"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 func (l ListMake) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -944,36 +940,36 @@ func (l ListMake) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type tmpL struct {
 		XMLName xml.Name `xml:"makelist"`
 		Sort    interface{}
-		Subterm *HLSubterm `xml:"subterm"`
+		Terms   []HLSubterm `xml:"subterm"`
 	}
 
-	t := tmpL{l.XMLName, l.Sort.Value, l.Subterm}
+	t := tmpL{l.XMLName, l.Sort.Value, l.Terms}
 
 	return e.Encode(t)
 }
 
 type ListLength struct {
-	XMLName xml.Name   `xml:"listlength"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"listlength"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type ListMemberAtIndex struct {
-	XMLName xml.Name   `xml:"memberatindex"`
-	Index   *uint      `xml:"index,attr"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"memberatindex"`
+	Index   *uint       `xml:"index,attr"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type ListSublist struct {
-	XMLName xml.Name   `xml:"sublist"`
-	Start   *uint      `xml:"start,attr"`
-	Length  *uint      `xml:"length,attr"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"sublist"`
+	Start   *uint       `xml:"start,attr"`
+	Length  *uint       `xml:"length,attr"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type ListEmpty struct {
-	XMLName xml.Name   `xml:"emptylist"`
-	Sort    *HLSort    `xml:",any"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"emptylist"`
+	Sort    *HLSort     `xml:",any"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 func (l ListEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -981,10 +977,10 @@ func (l ListEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type tmpL struct {
 		XMLName xml.Name `xml:"emptylist"`
 		Sort    interface{}
-		Subterm *HLSubterm `xml:"subterm"`
+		Terms   []HLSubterm `xml:"subterm"`
 	}
 
-	t := tmpL{l.XMLName, l.Sort.Value, l.Subterm}
+	t := tmpL{l.XMLName, l.Sort.Value, l.Terms}
 
 	return e.Encode(t)
 }
@@ -1004,54 +1000,54 @@ type IntInteger struct {
 }
 
 type IntAddition struct {
-	XMLName xml.Name   `xml:"addition"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"addition"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntSubtraction struct {
-	XMLName xml.Name   `xml:"subtraction"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"subtraction"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntMultiplication struct {
-	XMLName xml.Name   `xml:"mult"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"mult"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntDivision struct {
-	XMLName xml.Name   `xml:"div"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"div"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntModulo struct {
-	XMLName xml.Name   `xml:"mod"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"mod"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntGreaterThan struct {
-	XMLName xml.Name   `xml:"gt"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"gt"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntGreaterThanOrEqual struct {
-	XMLName xml.Name   `xml:"geq"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"geq"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntLessThan struct {
-	XMLName xml.Name   `xml:"lt"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"lt"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntLessThanOrEqual struct {
-	XMLName xml.Name   `xml:"leq"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"leq"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type IntNumberConstant struct {
-	XMLName xml.Name   `xml:"numberconstant"`
-	Value   *int       `xml:"value,attr"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"numberconstant"`
+	Value   *int        `xml:"value,attr"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 	// choice
 	IntNatural  *IntNatural  `xml:"natural"`
 	IntPositive *IntPositive `xml:"positive"`
@@ -1066,49 +1062,49 @@ type StringSort struct {
 }
 
 type StringLessThan struct {
-	XMLName xml.Name   `xml:"lts"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"lts"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringLessThanOrEqual struct {
-	XMLName xml.Name   `xml:"leqs"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"leqs"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringGreaterThan struct {
-	XMLName xml.Name   `xml:"gts"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"gts"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringGreaterThanOrEqual struct {
-	XMLName xml.Name   `xml:"geqs"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"geqs"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringConcatenation struct {
-	XMLName xml.Name   `xml:"stringconcatenation"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"stringconcatenation"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringAppend struct {
-	XMLName xml.Name   `xml:"stringappend"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"stringappend"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringLength struct {
-	XMLName xml.Name   `xml:"stringlength"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"stringlength"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringSubstring struct {
-	XMLName xml.Name   `xml:"substring"`
-	Start   *uint      `xml:"start,attr"`
-	Length  *uint      `xml:"length,attr"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"substring"`
+	Start   *uint       `xml:"start,attr"`
+	Length  *uint       `xml:"length,attr"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
 
 type StringConstant struct {
-	XMLName xml.Name   `xml:"stringconstant"`
-	Value   *string    `xml:"value>text"`
-	Subterm *HLSubterm `xml:"subterm"` // optional
+	XMLName xml.Name    `xml:"stringconstant"`
+	Value   *string     `xml:"value>text"`
+	Terms   []HLSubterm `xml:"subterm"` // optional
 }
