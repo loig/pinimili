@@ -16,27 +16,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-/*
-type HLSort2 struct {
-	// start choice
-	BoolSort       *BoolSort       `xml:"bool"`
-	FESort         *FESort         `xml:"finiteenumeration"`
-	CyclicEnumSort *CyclicEnumSort `xml:"cyclicenumeration"`
-	FIRSort        *FIRSort        `xml:"finiteintrange"`
-	DotSort        *DotSort        `xml:"dot"`
-	ListSort       *ListSort       `xml:"list"`
-	IntNatural     *IntNatural     `xml:"natural"`
-	IntPositive    *IntPositive    `xml:"positive"`
-	IntInteger     *IntInteger     `xml:"integer"`
-	StringSort     *StringSort     `xml:"string"`
-	//<ref name="BuiltInSort"/>
-	MultisetSort *HLMultisetSort `xml:"multisetsort"`
-	ProductSort  *HLProductSort  `xml:"productsort"`
-	UserSort     *HLUserSort     `xml:"usersort"`
-	// end choice
-}
-*/
-
 type HLVariableDeclaration struct {
 	XMLName xml.Name `xml:"variabledecl"`
 	ID      *string  `xml:"id,attr"`
@@ -79,56 +58,6 @@ type HLSort struct {
 	Type  string `xml:"-"`
 	Value interface{}
 }
-
-/*
-func (h *HLSort) CustomEncode(e *xml.Encoder) error {
-	fmt.Println("Plop:", h.Type)
-	switch h.Type {
-	case "bool":
-		var sort BoolSort = h.Value.(BoolSort)
-		e.Encode(sort)
-	case "finiteenumeration":
-		var sort FESort = h.Value.(FESort)
-		e.Encode(sort)
-	case "cyclicenumeration":
-		var sort CyclicEnumSort = h.Value.(CyclicEnumSort)
-		e.Encode(sort)
-	case "finiteintrange":
-		var sort FIRSort = h.Value.(FIRSort)
-		e.Encode(sort)
-	case "dot":
-		var sort DotSort = h.Value.(DotSort)
-		e.Encode(sort)
-	case "list":
-		var sort ListSort = h.Value.(ListSort)
-		e.Encode(sort)
-	case "natural":
-		var sort IntNatural = h.Value.(IntNatural)
-		e.Encode(sort)
-	case "positive":
-		var sort IntPositive = h.Value.(IntPositive)
-		e.Encode(sort)
-	case "integer":
-		var sort IntInteger = h.Value.(IntInteger)
-		e.Encode(sort)
-	case "string":
-		var sort StringSort = h.Value.(StringSort)
-		e.Encode(sort)
-	case "multisetsort":
-		var sort HLMultisetSort = h.Value.(HLMultisetSort)
-		e.Encode(sort)
-	case "productsort":
-		var sort HLProductSort = h.Value.(HLProductSort)
-		e.Encode(sort)
-	case "usersort":
-		var sort HLUserSort = h.Value.(HLUserSort)
-		e.Encode(sort)
-	default:
-		log.Panic("HLSort Custom Encoding: Unknown sort ", h.Type)
-	}
-	return nil
-}
-*/
 
 func (h *HLSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	h.Type = start.Name.Local
@@ -273,7 +202,7 @@ type HLOperatorDeclaration struct {
 	ID                   *string                 `xml:"id,attr"`
 	Name                 *string                 `xml:"name,attr"`
 	VariableDeclarations []HLVariableDeclaration `xml:"parameter>variabledecl"` // optional
-	Def                  *HLTerm                 `xml:"def"`
+	Def                  *HLTermDef              `xml:"def"`
 }
 
 type HLVariable struct {
@@ -282,14 +211,14 @@ type HLVariable struct {
 }
 
 type HLTupleOperator struct {
-	XMLName xml.Name `xml:"tuple"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"tuple"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type HLUserOperator struct { // recursion forbidden
-	XMLName xml.Name `xml:"useroperator"`
-	ID      *string  `xml:"declaration,attr"` // data type="IDREF"
-	Terms   []HLTerm `xml:"subterm"`          // optional
+	XMLName xml.Name   `xml:"useroperator"`
+	ID      *string    `xml:"declaration,attr"` // data type="IDREF"
+	Subterm *HLSubterm `xml:"subterm"`          // optional
 }
 
 type HLType struct { // To be tested with the change to HLSort
@@ -297,7 +226,58 @@ type HLType struct { // To be tested with the change to HLSort
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Sort          *HLSort             `xml:"structure"`    // optional
+	Structure     *HLSortStructure    `xml:"structure"`    // optional
+}
+
+type HLSortStructure struct {
+	XMLName xml.Name `xml:"structure"`
+	Sort    *HLSort  `xml:",any"`
+}
+
+func (h HLSortStructure) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"structure"`
+		Sort    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.Sort.Value}
+
+	return e.Encode(t)
+}
+
+type HLTermDef struct {
+	XMLName xml.Name `xml:"def"`
+	Term    *HLTerm  `xml:",any"`
+}
+
+func (h HLTermDef) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"def"`
+		Term    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.Term.Value}
+
+	return e.Encode(t)
+}
+
+type HLTermStructure struct {
+	XMLName xml.Name `xml:"structure"`
+	Term    *HLTerm  `xml:",any"`
+}
+
+func (h HLTermStructure) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpH struct {
+		XMLName xml.Name `xml:"structure"`
+		Term    interface{}
+	}
+
+	t := tmpH{h.XMLName, h.Term.Value}
+
+	return e.Encode(t)
 }
 
 type HLMarking struct {
@@ -305,7 +285,7 @@ type HLMarking struct {
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Term          *HLTerm             `xml:"structure"`    // optional
+	Structure     *HLTermStructure    `xml:"structure"`    // optional
 }
 
 type HLCondition struct {
@@ -313,7 +293,7 @@ type HLCondition struct {
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Term          *HLTerm             `xml:"structure"`    // optional
+	Structure     *HLTermStructure    `xml:"structure"`    // optional
 }
 
 type HLAnnotation struct {
@@ -321,108 +301,420 @@ type HLAnnotation struct {
 	Info          *string             `xml:"text"`
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Term          *HLTerm             `xml:"structure"`    // optional
+	Structure     *HLTermStructure    `xml:"structure"`    // optional
 }
 
 type HLTerm struct {
-	// choice
-	Variable                 *HLVariable               `xml:"variable"`
-	Equality                 *BoolEquality             `xml:"equality"`
-	Inequality               *BoolInequality           `xml:"inequality"`
-	And                      *BoolAnd                  `xml:"and"`
-	Or                       *BoolOr                   `xml:"or"`
-	Imply                    *BoolImply                `xml:"imply"`
-	Not                      *BoolNot                  `xml:"not"`
-	Predecessor              *CyclicEnumPredecessor    `xml:"predecessor"`
-	Successor                *CyclicEnumSuccessor      `xml:"successor"`
-	FIRLessThan              *FIRLessThan              `xml:"lessthan"`
-	FIRLessThanOrEqual       *FIRLessThanOrEqual       `xml:"lessthanorequal"`
-	FIRGreaterThan           *FIRGreaterThan           `xml:"greaterthan"`
-	FIRGreaterThanOrEqual    *FIRGreaterThanOrEqual    `xml:"greaterthanorequal"`
-	MultisetCardinality      *MultisetCardinality      `xml:"cardinality"`
-	MultisetCardinalityOf    *MultisetCardinalityOf    `xml:"cardinalityof"`
-	MultisetContains         *MultisetContains         `xml:"contains"`
-	PartitionLessThan        *PartitionLessThan        `xml:"ltp"`
-	PartitionGreaterThan     *PartitionGreaterThan     `xml:"gtp"`
-	PartitionElementOf       *PartitionElementOf       `xml:"partitionelementof"`
-	ListAppend               *ListAppend               `xml:"listappend"`
-	ListConcatenation        *ListConcatenation        `xml:"listconcatenation"`
-	ListMake                 *ListMake                 `xml:"makelist"`
-	ListLength               *ListLength               `xml:"listlength"`
-	ListMemberAtIndex        *ListMemberAtIndex        `xml:"memberatindex"`
-	ListSublist              *ListSublist              `xml:"sublist"`
-	IntAddition              *IntAddition              `xml:"addition"`
-	IntSubtraction           *IntSubtraction           `xml:"subtraction"`
-	IntMultiplication        *IntMultiplication        `xml:"mult"`
-	IntDivision              *IntDivision              `xml:"div"`
-	IntModulo                *IntModulo                `xml:"mod"`
-	IntGreaterThan           *IntGreaterThan           `xml:"gt"`
-	IntGreaterThanOrEqual    *IntGreaterThanOrEqual    `xml:"geq"`
-	IntLessThan              *IntLessThan              `xml:"lt"`
-	IntLessThanOrEqual       *IntLessThanOrEqual       `xml:"leq"`
-	StringLessThan           *StringLessThan           `xml:"lts"`
-	StringLessThanOrEqual    *StringLessThanOrEqual    `xml:"leqs"`
-	StringGreaterThan        *StringGreaterThan        `xml:"gts"`
-	StringGreaterThanOrEqual *StringGreaterThanOrEqual `xml:"geqs"`
-	StringConcatenation      *StringConcatenation      `xml:"stringconcatenation"`
-	StringAppend             *StringAppend             `xml:"stringappend"`
-	StringLength             *StringLength             `xml:"stringlength"`
-	StringSubstring          *StringSubstring          `xml:"substring"`
-	//<ref name="BuiltInOperator"/>
-	BoolConstant      *BoolConstant      `xml:"booleanconstant"`
-	FIRConstant       *FIRConstant       `xml:"finiteintrangeconstant"`
-	DotConstant       *DotConstant       `xml:"dotconstant"`
-	ListEmptyConstant *ListEmpty         `xml:"emptylist"`
-	IntNumberConstant *IntNumberConstant `xml:"numberconstant"`
-	StringConstant    *StringConstant    `xml:"stringconstant"`
-	//<ref name="BuiltInConstant"/>
-	MultisetAdd           *MultisetAdd           `xml:"add"`
-	MultisetAll           *MultisetAll           `xml:"all"`
-	MultisetNumberOf      *MultisetNumberOf      `xml:"numberof"`
-	MultisetSubtract      *MultisetSubtract      `xml:"subtract"`
-	MultisetScalarProduct *MultisetScalarProduct `xml:"scalarproduct"`
-	MultisetEmpty         *MultisetEmpty         `xml:"empty"`
-	//<ref name="MultisetOperator"/>
-	TupleOperator *HLTupleOperator `xml:"tuple"`
-	UserOperator  *HLUserOperator  `xml:"useroperator"`
+	Type  string `xml:"-"`
+	Value interface{}
+}
+
+func (h *HLTerm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	h.Type = start.Name.Local
+	switch h.Type {
+	// built in operators
+	case "variable":
+		var term HLVariable
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "equality":
+		var term BoolEquality
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "inequality":
+		var term BoolInequality
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "and":
+		var term BoolAnd
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "or":
+		var term BoolOr
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "imply":
+		var term BoolImply
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "not":
+		var term BoolNot
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "predecessor":
+		var term CyclicEnumPredecessor
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "successor":
+		var term CyclicEnumSuccessor
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "lessthan":
+		var term FIRLessThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "lessthanorequal":
+		var term FIRLessThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "greaterthan":
+		var term FIRGreaterThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "greaterthanorequal":
+		var term FIRGreaterThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "cardinality":
+		var term MultisetCardinality
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "cardinalityof":
+		var term MultisetCardinalityOf
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "contains":
+		var term MultisetContains
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "ltp":
+		var term PartitionLessThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "gtp":
+		var term PartitionGreaterThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "partitionelementof":
+		var term PartitionElementOf
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "listappend":
+		var term ListAppend
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "listconcatenation":
+		var term ListConcatenation
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "makelist":
+		var term ListMake
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "listlength":
+		var term ListLength
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "memberatindex":
+		var term ListMemberAtIndex
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "sublist":
+		var term ListSublist
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "addition":
+		var term IntAddition
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "subtraction":
+		var term IntSubtraction
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "mult":
+		var term IntMultiplication
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "div":
+		var term IntDivision
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "mod":
+		var term IntModulo
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "gt":
+		var term IntGreaterThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "geq":
+		var term IntGreaterThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "lt":
+		var term IntLessThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "leq":
+		var term IntLessThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "lts":
+		var term StringLessThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "leqs":
+		var term StringLessThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "gts":
+		var term StringGreaterThan
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "geqs":
+		var term StringGreaterThanOrEqual
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "stringconcatenation":
+		var term StringConcatenation
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "stringappend":
+		var term StringAppend
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "stringlength":
+		var term StringLength
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "substring":
+		var term StringSubstring
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+		// built in constants
+	case "booleanconstant":
+		var term BoolConstant
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "finiteintrangeconstant":
+		var term FIRConstant
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "dotconstant":
+		var term DotConstant
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "emptylist":
+		var term ListEmpty
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "numberconstant":
+		var term IntNumberConstant
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "stringconstant":
+		var term StringConstant
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+		// multiset operators
+	case "add":
+		var term MultisetAdd
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "all":
+		var term MultisetAll
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "numberof":
+		var term MultisetNumberOf
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "subtract":
+		var term MultisetSubtract
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "scalarproduct":
+		var term MultisetScalarProduct
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "empty":
+		var term MultisetEmpty
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+		// Other operators
+	case "tuple":
+		var term HLTupleOperator
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	case "useroperator":
+		var term HLUserOperator
+		if err := d.DecodeElement(&term, &start); err != nil {
+			return err
+		}
+		h.Value = term
+	default:
+		log.Panic("HLTerm: Unknown term ", h.Type)
+	}
+	return nil
+}
+
+type HLSubterm struct {
+	XMLName xml.Name `xml:"subterm"`
+	Terms   []HLTerm `xml:",any"`
+}
+
+func (h HLSubterm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	startToken := xml.StartElement{Name: xml.Name{Space: "", Local: "subterm"}}
+
+	err := e.EncodeToken(startToken)
+	if err != nil {
+		return err
+	}
+
+	for _, term := range h.Terms {
+		e.Encode(term.Value)
+	}
+
+	return e.EncodeToken(startToken.End())
 }
 
 // Booleans
 
 type BoolEquality struct {
-	XMLName xml.Name `xml:"equality"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"equality"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolInequality struct {
-	XMLName xml.Name `xml:"inequality"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"inequality"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolAnd struct {
-	XMLName xml.Name `xml:"and"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"and"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolOr struct {
-	XMLName xml.Name `xml:"or"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"or"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolImply struct {
-	XMLName xml.Name `xml:"imply"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"imply"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolNot struct {
-	XMLName xml.Name `xml:"not"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"not"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolConstant struct {
-	XMLName xml.Name `xml:"booleanconstant"`
-	Value   bool     `xml:"value,attr"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"booleanconstant"`
+	Value   *bool      `xml:"value,attr"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type BoolSort struct {
@@ -450,13 +742,13 @@ type CyclicEnumSort struct {
 }
 
 type CyclicEnumSuccessor struct {
-	XMLName xml.Name `xml:"successor"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"successor"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type CyclicEnumPredecessor struct {
-	XMLName xml.Name `xml:"predecessor"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"predecessor"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 // Finite integer ranges
@@ -468,30 +760,30 @@ type FIRSort struct {
 }
 
 type FIRLessThan struct {
-	XMLName xml.Name `xml:"lessthan"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"lessthan"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRLessThanOrEqual struct {
-	XMLName xml.Name `xml:"lessthanorequal"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"lessthanorequal"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRGreaterThan struct {
-	XMLName xml.Name `xml:"greaterthan"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"greaterthan"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRGreaterThanOrEqual struct {
-	XMLName xml.Name `xml:"greaterthanorequal"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"greaterthanorequal"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type FIRConstant struct {
-	XMLName xml.Name `xml:"finiteintrangeconstant"`
-	Value   *int     `xml:"value,attr"`
-	FIRSort *FIRSort `xml:"finiteintrange"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"finiteintrangeconstant"`
+	Value   *int       `xml:"value,attr"`
+	FIRSort *FIRSort   `xml:"finiteintrange"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 // Dots
@@ -507,50 +799,76 @@ type DotConstant struct {
 // Multisets
 
 type MultisetCardinality struct {
-	XMLName xml.Name `xml:"cardinality"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"cardinality"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetCardinalityOf struct {
-	XMLName xml.Name `xml:"cardinalityof"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"cardinalityof"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetContains struct {
-	XMLName xml.Name `xml:"contains"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"contains"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetAdd struct {
-	XMLName xml.Name `xml:"add"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"add"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetSubtract struct {
-	XMLName xml.Name `xml:"subtract"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"subtract"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetAll struct {
-	XMLName xml.Name `xml:"all"`
-	Terms   []HLTerm `xml:"subterm"` // optional
-	HLSort
+	XMLName xml.Name   `xml:"all"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
+	Sort    *HLSort    `xml:",any"`
+}
+
+func (m MultisetAll) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpM struct {
+		XMLName xml.Name   `xml:"all"`
+		Subterm *HLSubterm `xml:"subterm"`
+		Sort    interface{}
+	}
+
+	t := tmpM{m.XMLName, m.Subterm, m.Sort.Value}
+
+	return e.Encode(t)
 }
 
 type MultisetEmpty struct {
-	XMLName xml.Name `xml:"empty"`
-	Terms   []HLTerm `xml:"subterm"` // optional
-	HLSort
+	XMLName xml.Name   `xml:"empty"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
+	Sort    *HLSort    `xml:",any"`
+}
+
+func (m MultisetEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpM struct {
+		XMLName xml.Name   `xml:"empty"`
+		Subterm *HLSubterm `xml:"subterm"`
+		Sort    interface{}
+	}
+
+	t := tmpM{m.XMLName, m.Subterm, m.Sort.Value}
+
+	return e.Encode(t)
 }
 
 type MultisetScalarProduct struct {
-	XMLName xml.Name `xml:"scalarproduct"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"scalarproduct"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type MultisetNumberOf struct {
-	XMLName xml.Name `xml:"numberof"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"numberof"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 // Partitions
@@ -567,129 +885,108 @@ type PartitionElement struct {
 	XMLName xml.Name `xml:"partitionelement"`
 	ID      *string  `xml:"id,attr"`
 	Name    *string  `xml:"name,attr"`
-	// choice of one or more
-	Variable                 []HLVariable               `xml:"variable"`
-	Equality                 []BoolEquality             `xml:"equality"`
-	Inequality               []BoolInequality           `xml:"inequality"`
-	And                      []BoolAnd                  `xml:"and"`
-	Or                       []BoolOr                   `xml:"or"`
-	Imply                    []BoolImply                `xml:"imply"`
-	Not                      []BoolNot                  `xml:"not"`
-	Predecessor              []CyclicEnumPredecessor    `xml:"predecessor"`
-	Successor                []CyclicEnumSuccessor      `xml:"successor"`
-	FIRLessThan              []FIRLessThan              `xml:"lessthan"`
-	FIRLessThanOrEqual       []FIRLessThanOrEqual       `xml:"lessthanorequal"`
-	FIRGreaterThan           []FIRGreaterThan           `xml:"greaterthan"`
-	FIRGreaterThanOrEqual    []FIRGreaterThanOrEqual    `xml:"greaterthanorequal"`
-	MultisetCardinality      []MultisetCardinality      `xml:"cardinality"`
-	MultisetCardinalityOf    []MultisetCardinalityOf    `xml:"cardinalityof"`
-	MultisetContains         []MultisetContains         `xml:"contains"`
-	PartitionLessThan        []PartitionLessThan        `xml:"ltp"`
-	PartitionGreaterThan     []PartitionGreaterThan     `xml:"gtp"`
-	PartitionElementOf       []PartitionElementOf       `xml:"partitionelementof"`
-	ListAppend               []ListAppend               `xml:"listappend"`
-	ListConcatenation        []ListConcatenation        `xml:"listconcatenation"`
-	ListMake                 []ListMake                 `xml:"makelist"`
-	ListLength               []ListLength               `xml:"listlength"`
-	ListMemberAtIndex        []ListMemberAtIndex        `xml:"memberatindex"`
-	ListSublist              []ListSublist              `xml:"sublist"`
-	IntAddition              []IntAddition              `xml:"addition"`
-	IntSubtraction           []IntSubtraction           `xml:"subtraction"`
-	IntMultiplication        []IntMultiplication        `xml:"mult"`
-	IntDivision              []IntDivision              `xml:"div"`
-	IntModulo                []IntModulo                `xml:"mod"`
-	IntGreaterThan           []IntGreaterThan           `xml:"gt"`
-	IntGreaterThanOrEqual    []IntGreaterThanOrEqual    `xml:"geq"`
-	IntLessThan              []IntLessThan              `xml:"lt"`
-	IntLessThanOrEqual       []IntLessThanOrEqual       `xml:"leq"`
-	StringLessThan           []StringLessThan           `xml:"lts"`
-	StringLessThanOrEqual    []StringLessThanOrEqual    `xml:"leqs"`
-	StringGreaterThan        []StringGreaterThan        `xml:"gts"`
-	StringGreaterThanOrEqual []StringGreaterThanOrEqual `xml:"geqs"`
-	StringConcatenation      []StringConcatenation      `xml:"stringconcatenation"`
-	StringAppend             []StringAppend             `xml:"stringappend"`
-	StringLength             []StringLength             `xml:"stringlength"`
-	StringSubstring          []StringSubstring          `xml:"substring"`
-	//<ref name="BuiltInOperator"/>
-	BoolConstant      []BoolConstant      `xml:"booleanconstant"`
-	FIRConstant       []FIRConstant       `xml:"finiteintrangeconstant"`
-	DotConstant       []DotConstant       `xml:"dotconstant"`
-	ListEmptyConstant []ListEmpty         `xml:"emptylist"`
-	IntNumberConstant []IntNumberConstant `xml:"numberconstant"`
-	StringConstant    []StringConstant    `xml:"stringconstant"`
-	//<ref name="BuiltInConstant"/>
-	MultisetAdd           []MultisetAdd           `xml:"add"`
-	MultisetAll           []MultisetAll           `xml:"all"`
-	MultisetNumberOf      []MultisetNumberOf      `xml:"numberof"`
-	MultisetSubtract      []MultisetSubtract      `xml:"subtract"`
-	MultisetScalarProduct []MultisetScalarProduct `xml:"scalarproduct"`
-	MultisetEmpty         []MultisetEmpty         `xml:"empty"`
-	//<ref name="MultisetOperator"/>
-	TupleOperator []HLTupleOperator `xml:"tuple"`
-	UserOperator  []HLUserOperator  `xml:"useroperator"`
+	Terms   []HLTerm `xml:",any"`
 }
 
 type PartitionLessThan struct {
-	XMLName xml.Name `xml:"ltp"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"ltp"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type PartitionGreaterThan struct {
-	XMLName xml.Name `xml:"gtp"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"gtp"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type PartitionElementOf struct {
-	XMLName xml.Name `xml:"partitionelementof"`
-	Ref     string   `xml:"refpartition,attr"` // data of type IDREF
-	Terms   []HLTerm `xml:"subterm"`           // optional
+	XMLName xml.Name   `xml:"partitionelementof"`
+	Ref     *string    `xml:"refpartition,attr"` // data of type IDREF
+	Subterm *HLSubterm `xml:"subterm"`           // optional
 }
 
 // Lists
 
 type ListSort struct {
 	XMLName xml.Name `xml:"list"`
-	HLSort
+	Sort    *HLSort  `xml:",any"`
+}
+
+func (l ListSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpL struct {
+		XMLName xml.Name `xml:"list"`
+		Sort    interface{}
+	}
+
+	t := tmpL{l.XMLName, l.Sort.Value}
+
+	return e.Encode(t)
 }
 
 type ListAppend struct {
-	XMLName xml.Name `xml:"listappend"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"listappend"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type ListConcatenation struct {
-	XMLName xml.Name `xml:"listconcatenation"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"listconcatenation"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type ListMake struct {
-	XMLName xml.Name `xml:"makelist"`
-	HLSort
-	Terms []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"makelist"`
+	Sort    *HLSort    `xml:",any"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
+}
+
+func (l ListMake) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpL struct {
+		XMLName xml.Name `xml:"makelist"`
+		Sort    interface{}
+		Subterm *HLSubterm `xml:"subterm"`
+	}
+
+	t := tmpL{l.XMLName, l.Sort.Value, l.Subterm}
+
+	return e.Encode(t)
 }
 
 type ListLength struct {
-	XMLName xml.Name `xml:"listlength"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"listlength"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type ListMemberAtIndex struct {
-	XMLName xml.Name `xml:"memberatindex"`
-	Index   uint     `xml:"index,attr"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"memberatindex"`
+	Index   *uint      `xml:"index,attr"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type ListSublist struct {
-	XMLName xml.Name `xml:"sublist"`
-	Start   uint     `xml:"start,attr"`
-	Length  uint     `xml:"length,attr"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"sublist"`
+	Start   *uint      `xml:"start,attr"`
+	Length  *uint      `xml:"length,attr"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type ListEmpty struct {
-	XMLName xml.Name `xml:"emptylist"`
-	HLSort
-	Terms []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"emptylist"`
+	Sort    *HLSort    `xml:",any"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
+}
+
+func (l ListEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	type tmpL struct {
+		XMLName xml.Name `xml:"emptylist"`
+		Sort    interface{}
+		Subterm *HLSubterm `xml:"subterm"`
+	}
+
+	t := tmpL{l.XMLName, l.Sort.Value, l.Subterm}
+
+	return e.Encode(t)
 }
 
 // Integers
@@ -707,54 +1004,54 @@ type IntInteger struct {
 }
 
 type IntAddition struct {
-	XMLName xml.Name `xml:"addition"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"addition"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntSubtraction struct {
-	XMLName xml.Name `xml:"subtraction"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"subtraction"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntMultiplication struct {
-	XMLName xml.Name `xml:"mult"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"mult"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntDivision struct {
-	XMLName xml.Name `xml:"div"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"div"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntModulo struct {
-	XMLName xml.Name `xml:"mod"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"mod"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntGreaterThan struct {
-	XMLName xml.Name `xml:"gt"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"gt"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntGreaterThanOrEqual struct {
-	XMLName xml.Name `xml:"geq"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"geq"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntLessThan struct {
-	XMLName xml.Name `xml:"lt"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"lt"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntLessThanOrEqual struct {
-	XMLName xml.Name `xml:"leq"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"leq"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type IntNumberConstant struct {
-	XMLName xml.Name `xml:"numberconstant"`
-	Value   int      `xml:"value,attr"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"numberconstant"`
+	Value   *int       `xml:"value,attr"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 	// choice
 	IntNatural  *IntNatural  `xml:"natural"`
 	IntPositive *IntPositive `xml:"positive"`
@@ -769,49 +1066,49 @@ type StringSort struct {
 }
 
 type StringLessThan struct {
-	XMLName xml.Name `xml:"lts"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"lts"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringLessThanOrEqual struct {
-	XMLName xml.Name `xml:"leqs"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"leqs"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringGreaterThan struct {
-	XMLName xml.Name `xml:"gts"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"gts"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringGreaterThanOrEqual struct {
-	XMLName xml.Name `xml:"geqs"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"geqs"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringConcatenation struct {
-	XMLName xml.Name `xml:"stringconcatenation"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"stringconcatenation"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringAppend struct {
-	XMLName xml.Name `xml:"stringappend"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"stringappend"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringLength struct {
-	XMLName xml.Name `xml:"stringlength"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"stringlength"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringSubstring struct {
-	XMLName xml.Name `xml:"substring"`
-	Start   *uint    `xml:"start,attr"`
-	Length  *uint    `xml:"length,attr"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"substring"`
+	Start   *uint      `xml:"start,attr"`
+	Length  *uint      `xml:"length,attr"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
 
 type StringConstant struct {
-	XMLName xml.Name `xml:"stringconstant"`
-	Value   *string  `xml:"value>text"`
-	Terms   []HLTerm `xml:"subterm"` // optional
+	XMLName xml.Name   `xml:"stringconstant"`
+	Value   *string    `xml:"value>text"`
+	Subterm *HLSubterm `xml:"subterm"` // optional
 }
