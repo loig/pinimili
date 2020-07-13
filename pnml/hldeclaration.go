@@ -30,14 +30,6 @@ func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	return nil
 }
 
-type HLOperatorDeclaration struct {
-	XMLName              xml.Name                `xml:"namedoperator"`
-	ID                   *string                 `xml:"id,attr"`
-	Name                 *string                 `xml:"name,attr"`
-	VariableDeclarations []HLVariableDeclaration `xml:"parameter>variabledecl"` // optional
-	Def                  *HLTermDef              `xml:"def"`
-}
-
 type HLVariable struct {
 	XMLName xml.Name `xml:"variable"`
 	ID      *string  `xml:"refvariable,attr"` // data type="IDREF"
