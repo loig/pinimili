@@ -2,7 +2,6 @@ package pnml
 
 import (
 	"encoding/xml"
-	"errors"
 	"log"
 )
 
@@ -15,27 +14,6 @@ type HLDeclaration struct {
 	OperatorDeclarations           []HLOperatorDeclaration    `xml:"structure>declarations>namedoperator"`    // optional
 	PartitionOperatorsDeclarations []PartitionElement         `xml:"structure>declarations>partitionelement"` // optional
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
-}
-
-func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	type hldeclaration HLDeclaration
-	var hh hldeclaration
-	if err := d.DecodeElement(&hh, &start); err != nil {
-		return err
-	}
-	if hh.Info == nil {
-		return errors.New("HLDeclaration: A declaration must have a text element")
-	}
-	*h = HLDeclaration(hh)
-	return nil
-}
-
-type HLType struct { // To be tested with the change to HLSort
-	XMLName       xml.Name            `xml:"type"`
-	Info          *string             `xml:"text"`
-	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
-	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Structure     *HLSortStructure    `xml:"structure"`    // optional
 }
 
 type HLSortStructure struct {
