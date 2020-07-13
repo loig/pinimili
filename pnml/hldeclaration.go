@@ -16,26 +16,9 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLTermStructure struct {
-	XMLName xml.Name `xml:"structure"`
-	Term    *HLTerm  `xml:",any"`
-}
-
-func (h HLTermStructure) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"structure"`
-		Term    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.Term.Value}
-
-	return e.Encode(t)
-}
-
 type HLMarking struct {
 	XMLName       xml.Name            `xml:"hlinitialMarking"`
-	Info          *string             `xml:"text"`
+	Info          *string             `xml:"text"`         // optional
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
 	Structure     *HLTermStructure    `xml:"structure"`    // optional
@@ -43,7 +26,7 @@ type HLMarking struct {
 
 type HLCondition struct {
 	XMLName       xml.Name            `xml:"condition"`
-	Info          *string             `xml:"text"`
+	Info          *string             `xml:"text"`         // optional
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
 	Structure     *HLTermStructure    `xml:"structure"`    // optional
@@ -51,7 +34,7 @@ type HLCondition struct {
 
 type HLAnnotation struct {
 	XMLName       xml.Name            `xml:"hlinscription"`
-	Info          *string             `xml:"text"`
+	Info          *string             `xml:"text"`         // optional
 	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
 	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
 	Structure     *HLTermStructure    `xml:"structure"`    // optional
