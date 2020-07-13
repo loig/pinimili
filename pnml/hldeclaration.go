@@ -16,23 +16,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLSortStructure struct {
-	XMLName xml.Name `xml:"structure"`
-	Sort    *HLSort  `xml:",any"`
-}
-
-func (h HLSortStructure) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"structure"`
-		Sort    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.Sort.Value}
-
-	return e.Encode(t)
-}
-
 type HLTermDef struct {
 	XMLName xml.Name `xml:"def"`
 	Term    *HLTerm  `xml:",any"`
