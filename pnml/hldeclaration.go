@@ -15,23 +15,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLSubterm struct {
-	XMLName xml.Name `xml:"subterm"`
-	Term    HLTerm   `xml:",any"`
-}
-
-func (h HLSubterm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"subterm"`
-		Term    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.Term.Value}
-
-	return e.Encode(t)
-}
-
 // Booleans
 
 type BoolEquality struct {
