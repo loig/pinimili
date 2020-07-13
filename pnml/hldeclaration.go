@@ -30,11 +30,6 @@ func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	return nil
 }
 
-type HLUserSort struct {
-	XMLName xml.Name `xml:"usersort"`
-	ID      *string  `xml:"declaration,attr"` // data type="IDREF"
-}
-
 type HLSortDeclaration struct {
 	XMLName xml.Name `xml:"namedsort"`
 	ID      *string  `xml:"id,attr"`
