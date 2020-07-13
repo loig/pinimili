@@ -30,11 +30,6 @@ func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	return nil
 }
 
-type HLTupleOperator struct {
-	XMLName xml.Name    `xml:"tuple"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type HLUserOperator struct { // recursion forbidden
 	XMLName xml.Name    `xml:"useroperator"`
 	ID      *string     `xml:"declaration,attr"` // data type="IDREF"
