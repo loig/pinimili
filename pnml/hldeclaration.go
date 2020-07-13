@@ -30,27 +30,6 @@ func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	return nil
 }
 
-type HLSortDeclaration struct {
-	XMLName xml.Name `xml:"namedsort"`
-	ID      *string  `xml:"id,attr"`
-	Name    *string  `xml:"name,attr"`
-	Sort    *HLSort  `xml:",any"`
-}
-
-func (h HLSortDeclaration) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"namedsort"`
-		ID      *string  `xml:"id,attr"`
-		Name    *string  `xml:"name,attr"`
-		Sort    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.ID, h.Name, h.Sort.Value}
-
-	return e.Encode(t)
-}
-
 type HLOperatorDeclaration struct {
 	XMLName              xml.Name                `xml:"namedoperator"`
 	ID                   *string                 `xml:"id,attr"`
