@@ -30,25 +30,6 @@ func (h *HLDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	return nil
 }
 
-
-
-type HLMultisetSort struct {
-	XMLName xml.Name `xml:"multisetsort"`
-	Sort    *HLSort  `xml:",any"`
-}
-
-func (h HLMultisetSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"multisetsort"`
-		Sort    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.Sort.Value}
-
-	return e.Encode(t)
-}
-
 type HLSort struct {
 	Type  string `xml:"-"`
 	Value interface{}
