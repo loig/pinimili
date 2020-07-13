@@ -27,6 +27,8 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("Unmarshaling ok")
+
 	/*
 		fmt.Println("This model has", len(pnml.Nets), "nets")
 		for i, net := range pnml.Nets {
@@ -56,7 +58,8 @@ func main() {
 		fmt.Println("\t", len(net[0].Arcs), "arcs")
 	*/
 
-	byteValue2, err := xml.MarshalIndent(pnml, "", "\t")
-	fmt.Println(string(byteValue2))
-
+	/*
+		byteValue2, err := xml.MarshalIndent(pnml, "", "\t")
+		fmt.Println(string(byteValue2))
+	*/
 }
