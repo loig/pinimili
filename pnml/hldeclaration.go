@@ -16,30 +16,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLMarking struct {
-	XMLName       xml.Name            `xml:"hlinitialMarking"`
-	Info          *string             `xml:"text"`         // optional
-	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
-	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Structure     *HLTermStructure    `xml:"structure"`    // optional
-}
-
-type HLCondition struct {
-	XMLName       xml.Name            `xml:"condition"`
-	Info          *string             `xml:"text"`         // optional
-	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
-	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Structure     *HLTermStructure    `xml:"structure"`    // optional
-}
-
-type HLAnnotation struct {
-	XMLName       xml.Name            `xml:"hlinscription"`
-	Info          *string             `xml:"text"`         // optional
-	Graphics      *AnnotationGraphics `xml:"graphics"`     // optional
-	ToolSpecifics []ToolSpecific      `xml:"toolspecific"` // optional
-	Structure     *HLTermStructure    `xml:"structure"`    // optional
-}
-
 type HLTerm struct {
 	Type  string `xml:"-"`
 	Value interface{}
