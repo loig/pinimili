@@ -16,23 +16,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type HLTermDef struct {
-	XMLName xml.Name `xml:"def"`
-	Term    *HLTerm  `xml:",any"`
-}
-
-func (h HLTermDef) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpH struct {
-		XMLName xml.Name `xml:"def"`
-		Term    interface{}
-	}
-
-	t := tmpH{h.XMLName, h.Term.Value}
-
-	return e.Encode(t)
-}
-
 type HLTermStructure struct {
 	XMLName xml.Name `xml:"structure"`
 	Term    *HLTerm  `xml:",any"`
