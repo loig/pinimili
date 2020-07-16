@@ -17,11 +17,6 @@ type HLDeclaration struct {
 
 // Booleans
 
-type BoolEquality struct {
-	XMLName xml.Name    `xml:"equality"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type BoolInequality struct {
 	XMLName xml.Name    `xml:"inequality"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
