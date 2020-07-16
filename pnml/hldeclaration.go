@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Finite integer ranges
 
-type FIRLessThanOrEqual struct {
-	XMLName xml.Name    `xml:"lessthanorequal"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type FIRGreaterThan struct {
 	XMLName xml.Name    `xml:"greaterthan"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
