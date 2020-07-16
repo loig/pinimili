@@ -17,11 +17,6 @@ type HLDeclaration struct {
 
 // Finite enumeration
 
-type FESort struct {
-	XMLName   xml.Name     `xml:"finiteenumeration"`
-	Constants []FEConstant `xml:"feconstant"` // optional
-}
-
 // Cyclic enumeration
 
 type CyclicEnumSort struct {
