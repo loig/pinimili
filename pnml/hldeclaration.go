@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-type MultisetScalarProduct struct {
-	XMLName xml.Name    `xml:"scalarproduct"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type MultisetNumberOf struct {
 	XMLName xml.Name    `xml:"numberof"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
