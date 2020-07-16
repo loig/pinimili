@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Finite integer ranges
 
-type FIRGreaterThanOrEqual struct {
-	XMLName xml.Name    `xml:"greaterthanorequal"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type FIRConstant struct {
 	XMLName xml.Name    `xml:"finiteintrangeconstant"`
 	Value   *int        `xml:"value,attr"`
