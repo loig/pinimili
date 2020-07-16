@@ -17,26 +17,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Partitions
-
 // Lists
-
-type ListSort struct {
-	XMLName xml.Name `xml:"list"`
-	Sort    *HLSort  `xml:",any"`
-}
-
-func (l ListSort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpL struct {
-		XMLName xml.Name `xml:"list"`
-		Sort    interface{}
-	}
-
-	t := tmpL{l.XMLName, l.Sort.Value}
-
-	return e.Encode(t)
-}
 
 type ListAppend struct {
 	XMLName xml.Name    `xml:"listappend"`
