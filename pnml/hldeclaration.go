@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 )
 
+// TODO: propagate types to check them at operation level
+
 type HLDeclaration struct {
 	XMLName                        xml.Name                   `xml:"declaration"`
 	Info                           *string                    `xml:"text"`                                    // optional
@@ -16,11 +18,6 @@ type HLDeclaration struct {
 }
 
 // Cyclic enumeration
-
-type CyclicEnumPredecessor struct {
-	XMLName xml.Name    `xml:"predecessor"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
 
 // Finite integer ranges
 
