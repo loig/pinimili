@@ -17,16 +17,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Multisets
-
 // Partitions
-
-type PartitionElement struct {
-	XMLName xml.Name `xml:"partitionelement"`
-	ID      *string  `xml:"id,attr"`
-	Name    *string  `xml:"name,attr"`
-	Terms   []HLTerm `xml:",any"`
-}
 
 type PartitionLessThan struct {
 	XMLName xml.Name    `xml:"ltp"`
