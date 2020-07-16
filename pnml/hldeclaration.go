@@ -19,25 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListMake struct {
-	XMLName xml.Name    `xml:"makelist"`
-	Sort    *HLSort     `xml:",any"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
-func (l ListMake) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpL struct {
-		XMLName xml.Name `xml:"makelist"`
-		Sort    interface{}
-		Terms   []HLSubterm `xml:"subterm"`
-	}
-
-	t := tmpL{l.XMLName, l.Sort.Value, l.Terms}
-
-	return e.Encode(t)
-}
-
 type ListLength struct {
 	XMLName xml.Name    `xml:"listlength"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
