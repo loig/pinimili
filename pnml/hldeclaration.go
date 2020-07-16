@@ -17,12 +17,6 @@ type HLDeclaration struct {
 
 // Booleans
 
-type BoolConstant struct {
-	XMLName xml.Name    `xml:"booleanconstant"`
-	Value   *bool       `xml:"value,attr"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type BoolSort struct {
 	XMLName xml.Name `xml:"bool"`
 }
