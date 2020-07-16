@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListLength struct {
-	XMLName xml.Name    `xml:"listlength"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type ListMemberAtIndex struct {
 	XMLName xml.Name    `xml:"memberatindex"`
 	Index   *uint       `xml:"index,attr"`
