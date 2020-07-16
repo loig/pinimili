@@ -15,14 +15,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Finite enumeration
-
 // Cyclic enumeration
-
-type CyclicEnumSort struct {
-	XMLName   xml.Name     `xml:"cyclicenumeration"`
-	Constants []FEConstant `xml:"feconstant"` // optional
-}
 
 type CyclicEnumSuccessor struct {
 	XMLName xml.Name    `xml:"successor"`
