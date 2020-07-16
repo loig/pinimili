@@ -17,14 +17,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Dots
-
 // Multisets
-
-type MultisetCardinality struct {
-	XMLName xml.Name    `xml:"cardinality"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
 
 type MultisetCardinalityOf struct {
 	XMLName xml.Name    `xml:"cardinalityof"`
