@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-type MultisetNumberOf struct {
-	XMLName xml.Name    `xml:"numberof"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 // Partitions
 
 type PartitionSortDeclaration struct {
