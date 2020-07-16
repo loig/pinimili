@@ -19,13 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListSublist struct {
-	XMLName xml.Name    `xml:"sublist"`
-	Start   *uint       `xml:"start,attr"`
-	Length  *uint       `xml:"length,attr"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type ListEmpty struct {
 	XMLName xml.Name    `xml:"emptylist"`
 	Sort    *HLSort     `xml:",any"`
