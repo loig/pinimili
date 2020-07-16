@@ -19,12 +19,6 @@ type HLDeclaration struct {
 
 // Partitions
 
-type PartitionElementOf struct {
-	XMLName xml.Name    `xml:"partitionelementof"`
-	Ref     *string     `xml:"refpartition,attr"` // data of type IDREF
-	Terms   []HLSubterm `xml:"subterm"`           // optional
-}
-
 // Lists
 
 type ListSort struct {
