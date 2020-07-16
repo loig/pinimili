@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-type MultisetCardinalityOf struct {
-	XMLName xml.Name    `xml:"cardinalityof"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type MultisetContains struct {
 	XMLName xml.Name    `xml:"contains"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
