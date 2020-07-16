@@ -7,7 +7,7 @@ import (
 
 type BoolInequality struct {
 	XMLName xml.Name    `xml:"inequality"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
+	Terms   []HLSubterm `xml:"subterm"`
 }
 
 func (b *BoolInequality) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
