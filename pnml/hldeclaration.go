@@ -15,15 +15,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Booleans
-
 // Finite enumeration
-
-type FEConstant struct {
-	XMLName xml.Name `xml:"feconstant"`
-	ID      *string  `xml:"id,attr"`
-	Name    *string  `xml:"name,attr"`
-}
 
 type FESort struct {
 	XMLName   xml.Name     `xml:"finiteenumeration"`
