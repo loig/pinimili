@@ -17,11 +17,6 @@ type HLDeclaration struct {
 
 // Cyclic enumeration
 
-type CyclicEnumSuccessor struct {
-	XMLName xml.Name    `xml:"successor"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type CyclicEnumPredecessor struct {
 	XMLName xml.Name    `xml:"predecessor"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
