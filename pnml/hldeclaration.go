@@ -19,12 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListMemberAtIndex struct {
-	XMLName xml.Name    `xml:"memberatindex"`
-	Index   *uint       `xml:"index,attr"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type ListSublist struct {
 	XMLName xml.Name    `xml:"sublist"`
 	Start   *uint       `xml:"start,attr"`
