@@ -17,27 +17,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Lists
-
-type ListEmpty struct {
-	XMLName xml.Name    `xml:"emptylist"`
-	Sort    *HLSort     `xml:",any"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
-func (l ListEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpL struct {
-		XMLName xml.Name `xml:"emptylist"`
-		Sort    interface{}
-		Terms   []HLSubterm `xml:"subterm"`
-	}
-
-	t := tmpL{l.XMLName, l.Sort.Value, l.Terms}
-
-	return e.Encode(t)
-}
-
 // Integers
 
 type IntNatural struct {
