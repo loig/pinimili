@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Partitions
 
-type PartitionLessThan struct {
-	XMLName xml.Name    `xml:"ltp"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type PartitionGreaterThan struct {
 	XMLName xml.Name    `xml:"gtp"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
