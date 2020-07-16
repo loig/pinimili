@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-type MultisetSubtract struct {
-	XMLName xml.Name    `xml:"subtract"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type MultisetAll struct {
 	XMLName xml.Name    `xml:"all"`
 	Terms   []HLSubterm `xml:"subterm"` // optional

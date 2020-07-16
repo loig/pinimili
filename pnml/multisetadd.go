@@ -7,7 +7,7 @@ import (
 
 type MultisetAdd struct {
 	XMLName xml.Name    `xml:"add"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
+	Terms   []HLSubterm `xml:"subterm"`
 }
 
 func (m *MultisetAdd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
