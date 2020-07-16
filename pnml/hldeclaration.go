@@ -19,12 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-type MultisetAll struct {
-	XMLName xml.Name    `xml:"all"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-	Sort    *HLSort     `xml:",any"`
-}
-
 func (m MultisetAll) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	type tmpM struct {
