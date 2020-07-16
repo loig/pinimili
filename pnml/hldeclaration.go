@@ -19,13 +19,6 @@ type HLDeclaration struct {
 
 // Finite integer ranges
 
-type FIRConstant struct {
-	XMLName xml.Name    `xml:"finiteintrangeconstant"`
-	Value   *int        `xml:"value,attr"`
-	FIRSort *FIRSort    `xml:"finiteintrange"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 // Dots
 
 type DotSort struct {
