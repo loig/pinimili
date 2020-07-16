@@ -17,11 +17,6 @@ type HLDeclaration struct {
 
 // Booleans
 
-type BoolOr struct {
-	XMLName xml.Name    `xml:"or"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type BoolImply struct {
 	XMLName xml.Name    `xml:"imply"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
