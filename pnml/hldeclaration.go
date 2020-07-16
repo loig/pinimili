@@ -21,14 +21,6 @@ type HLDeclaration struct {
 
 // Partitions
 
-type PartitionSortDeclaration struct {
-	XMLName xml.Name `xml:"partition"`
-	ID      *string  `xml:"id,attr"`
-	Name    *string  `xml:"name,attr"`
-	HLSort
-	PartitionElements []PartitionElement `xml:"partitionelement"` // one or more
-}
-
 type PartitionElement struct {
 	XMLName xml.Name `xml:"partitionelement"`
 	ID      *string  `xml:"id,attr"`
