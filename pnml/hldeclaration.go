@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListConcatenation struct {
-	XMLName xml.Name    `xml:"listconcatenation"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type ListMake struct {
 	XMLName xml.Name    `xml:"makelist"`
 	Sort    *HLSort     `xml:",any"`
