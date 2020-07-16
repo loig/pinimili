@@ -19,38 +19,6 @@ type HLDeclaration struct {
 
 // Multisets
 
-func (m MultisetAll) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpM struct {
-		XMLName xml.Name    `xml:"all"`
-		Terms   []HLSubterm `xml:"subterm"`
-		Sort    interface{}
-	}
-
-	t := tmpM{m.XMLName, m.Terms, m.Sort.Value}
-
-	return e.Encode(t)
-}
-
-type MultisetEmpty struct {
-	XMLName xml.Name    `xml:"empty"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-	Sort    *HLSort     `xml:",any"`
-}
-
-func (m MultisetEmpty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	type tmpM struct {
-		XMLName xml.Name    `xml:"empty"`
-		Terms   []HLSubterm `xml:"subterm"`
-		Sort    interface{}
-	}
-
-	t := tmpM{m.XMLName, m.Terms, m.Sort.Value}
-
-	return e.Encode(t)
-}
-
 type MultisetScalarProduct struct {
 	XMLName xml.Name    `xml:"scalarproduct"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
