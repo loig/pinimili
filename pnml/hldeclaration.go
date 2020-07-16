@@ -17,17 +17,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Finite integer ranges
-
 // Dots
-
-type DotSort struct {
-	XMLName xml.Name `xml:"dot"`
-}
-
-type DotConstant struct {
-	XMLName xml.Name `xml:"dotconstant"`
-}
 
 // Multisets
 
