@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Partitions
 
-type PartitionGreaterThan struct {
-	XMLName xml.Name    `xml:"gtp"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type PartitionElementOf struct {
 	XMLName xml.Name    `xml:"partitionelementof"`
 	Ref     *string     `xml:"refpartition,attr"` // data of type IDREF
