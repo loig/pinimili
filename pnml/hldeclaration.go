@@ -17,15 +17,7 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-// Cyclic enumeration
-
 // Finite integer ranges
-
-type FIRSort struct {
-	XMLName xml.Name `xml:"finiteintrange"`
-	Start   *int     `xml:"start,attr"`
-	End     *int     `xml:"end,attr"`
-}
 
 type FIRLessThan struct {
 	XMLName xml.Name    `xml:"lessthan"`
