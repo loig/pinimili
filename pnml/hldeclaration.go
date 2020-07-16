@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Lists
 
-type ListAppend struct {
-	XMLName xml.Name    `xml:"listappend"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type ListConcatenation struct {
 	XMLName xml.Name    `xml:"listconcatenation"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
