@@ -7,7 +7,7 @@ import (
 
 type MultisetCardinality struct {
 	XMLName xml.Name    `xml:"cardinality"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
+	Terms   []HLSubterm `xml:"subterm"`
 }
 
 func (m *MultisetCardinality) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
