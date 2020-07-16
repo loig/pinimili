@@ -17,10 +17,6 @@ type HLDeclaration struct {
 
 // Booleans
 
-type BoolSort struct {
-	XMLName xml.Name `xml:"bool"`
-}
-
 // Finite enumeration
 
 type FEConstant struct {
