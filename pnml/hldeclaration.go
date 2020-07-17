@@ -17,11 +17,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type StringGreaterThan struct {
-	XMLName xml.Name    `xml:"gts"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type StringGreaterThanOrEqual struct {
 	XMLName xml.Name    `xml:"geqs"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
