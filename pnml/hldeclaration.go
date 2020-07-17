@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntLessThanOrEqual struct {
-	XMLName xml.Name    `xml:"leq"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntNumberConstant struct {
 	XMLName xml.Name    `xml:"numberconstant"`
 	Value   *int        `xml:"value,attr"`
