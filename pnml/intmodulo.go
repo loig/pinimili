@@ -17,7 +17,7 @@ func (i *IntModulo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(ii.Terms) != 2 {
-		return errors.New("IntModulo: modulo must have two subterms")
+		return errors.New("IntModulo: mod must have two subterms")
 	}
 	*i = IntModulo(ii)
 	return nil

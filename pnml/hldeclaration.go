@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntGreaterThan struct {
-	XMLName xml.Name    `xml:"gt"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntGreaterThanOrEqual struct {
 	XMLName xml.Name    `xml:"geq"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
