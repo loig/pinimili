@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntModulo struct {
-	XMLName xml.Name    `xml:"mod"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntGreaterThan struct {
 	XMLName xml.Name    `xml:"gt"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
