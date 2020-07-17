@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntDivision struct {
-	XMLName xml.Name    `xml:"div"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntModulo struct {
 	XMLName xml.Name    `xml:"mod"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
