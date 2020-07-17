@@ -17,11 +17,6 @@ type HLDeclaration struct {
 	FEConstantDeclarations         []FEConstant               `xml:"structure>declarations>feconstant"`       // optional
 }
 
-type StringAppend struct {
-	XMLName xml.Name    `xml:"stringappend"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type StringLength struct {
 	XMLName xml.Name    `xml:"stringlength"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
