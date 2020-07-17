@@ -19,11 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntSubtraction struct {
-	XMLName xml.Name    `xml:"subtraction"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntMultiplication struct {
 	XMLName xml.Name    `xml:"mult"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
