@@ -19,17 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntNumberConstant struct {
-	XMLName xml.Name    `xml:"numberconstant"`
-	Value   *int        `xml:"value,attr"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-	// choice
-	IntNatural  *IntNatural  `xml:"natural"`
-	IntPositive *IntPositive `xml:"positive"`
-	IntInteger  *IntInteger  `xml:"integer"`
-	// end choice
-}
-
 // Strings
 
 type StringSort struct {
