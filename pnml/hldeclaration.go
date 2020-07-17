@@ -19,23 +19,6 @@ type HLDeclaration struct {
 
 // Integers
 
-type IntNatural struct {
-	XMLName xml.Name `xml:"natural"`
-}
-
-type IntPositive struct {
-	XMLName xml.Name `xml:"positive"`
-}
-
-type IntInteger struct {
-	XMLName xml.Name `xml:"integer"`
-}
-
-type IntAddition struct {
-	XMLName xml.Name    `xml:"addition"`
-	Terms   []HLSubterm `xml:"subterm"` // optional
-}
-
 type IntSubtraction struct {
 	XMLName xml.Name    `xml:"subtraction"`
 	Terms   []HLSubterm `xml:"subterm"` // optional
