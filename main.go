@@ -1,33 +1,34 @@
 package main
 
 import (
-	"encoding/xml"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	"github.com/loig/pinimili/pnml"
 )
 
 func main() {
 
-	pnmlFile, err := os.Open("test.pnml")
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println(pnml.Getptids("test.pnml"))
 
-	byteValue, err := ioutil.ReadAll(pnmlFile)
-	if err != nil {
-		panic(err)
-	}
+	/*
+		pnmlFile, err := os.Open("test.pnml")
+		if err != nil {
+			panic(err)
+		}
 
-	var pnml pnml.Pnml
-	err = xml.Unmarshal(byteValue, &pnml)
-	if err != nil {
-		panic(err)
-	}
+		byteValue, err := ioutil.ReadAll(pnmlFile)
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Println("Unmarshaling ok")
+		var pnml pnml.Pnml
+		err = xml.Unmarshal(byteValue, &pnml)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("Unmarshaling ok")
+	*/
 
 	/*
 		fmt.Println("This model has", len(pnml.Nets), "nets")
