@@ -10,7 +10,7 @@ import (
 // described in the file whose path is given in argument
 func Getptids(path string) (pids []string, tids []string) {
 
-	pnmlFile, err := os.Open("test.pnml")
+	pnmlFile, err := os.Open(path)
 	if err != nil {
 		panic(err)
 	}
