@@ -16,7 +16,7 @@ func (c *CyclicEnumSuccessor) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	if err := d.DecodeElement(&cc, &start); err != nil {
 		return err
 	}
-	if len(c.Terms) != 1 {
+	if len(cc.Terms) != 1 {
 		return errors.New("CyclicEnumSuccessor: a successor must have exactly one element")
 	}
 	*c = CyclicEnumSuccessor(cc)

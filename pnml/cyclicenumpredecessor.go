@@ -16,7 +16,7 @@ func (c *CyclicEnumPredecessor) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	if err := d.DecodeElement(&cc, &start); err != nil {
 		return err
 	}
-	if len(c.Terms) != 1 {
+	if len(cc.Terms) != 1 {
 		return errors.New("CyclicEnumPredecessor: a predecessor must have exactly one element")
 	}
 	*c = CyclicEnumPredecessor(cc)
