@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	fmt.Println(pnml.Getptids("test.pnml"))
+	fmt.Println(pnml.Getptids("test.pnml", false))
 
 	/*
 		pnmlFile, err := os.Open("test.pnml")

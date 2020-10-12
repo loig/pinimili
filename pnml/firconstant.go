@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type FIRConstant struct {
@@ -25,7 +26,10 @@ func (f *FIRConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return errors.New("FIRConstant: a finiteintrangeconstant must have a finiterange element")
 	}
 	if len(ff.Terms) != 0 {
-		return errors.New("FIRConstant: a finiteintrangeconstant must not have subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("FIRConstant: a finiteintrangeconstant must not have subterms")
+		}
+		log.Print("Pinimili: finiteintrangeconstant element with ", len(ff.Terms), " subterm elements (should be 0)")
 	}
 	*f = FIRConstant(ff)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type NodeGraphics struct {
@@ -20,7 +21,10 @@ func (n *NodeGraphics) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 	if nn.Position == nil {
-		return errors.New("A node (or page) graphics must have a position")
+		if panicIfNotPnmlCompliant {
+			return errors.New("A node (or page) graphics must have a position")
+		}
+		log.Print("Pinimili: graphics element with no position element")
 	}
 	*n = NodeGraphics(nn)
 	return nil

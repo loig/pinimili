@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type MultisetAdd struct {
@@ -17,7 +18,10 @@ func (m *MultisetAdd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return err
 	}
 	if len(mm.Terms) < 2 {
-		return errors.New("MultisetAdd: add must have at least two multiset elements")
+		if panicIfNotPnmlCompliant {
+			return errors.New("MultisetAdd: add must have at least two multiset elements")
+		}
+		log.Print("Pinimili: add element with ", len(mm.Terms), " subterm elements (should be at least 2)")
 	}
 	*m = MultisetAdd(mm)
 	return nil

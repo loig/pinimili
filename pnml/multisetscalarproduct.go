@@ -16,7 +16,7 @@ func (m *MultisetScalarProduct) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	if err := d.DecodeElement(&mm, &start); err != nil {
 		return err
 	}
-	if len(mm.Terms) != 1 {
+	if len(mm.Terms) != 1 { // should be 2 ?
 		return errors.New("MultisetScalarProduct: scalarproduct must have exactly one scalar element and one multiset element")
 	}
 	*m = MultisetScalarProduct(mm)

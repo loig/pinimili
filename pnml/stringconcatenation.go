@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type StringConcatenation struct {
@@ -17,7 +18,10 @@ func (s *StringConcatenation) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		return err
 	}
 	if len(ss.Terms) != 2 {
-		return errors.New("StringConcatenation: stringconcatenation must have two subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("StringConcatenation: stringconcatenation must have two subterms")
+		}
+		log.Print("Pinimili: stringconcatenation element with ", len(ss.Terms), " subterm elements (should be 2)")
 	}
 	*s = StringConcatenation(ss)
 	return nil

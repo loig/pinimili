@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type AnnotationGraphics struct {
@@ -20,7 +21,10 @@ func (a *AnnotationGraphics) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		return err
 	}
 	if aa.Offset == nil {
-		return errors.New("An annotation graphics must have an offset")
+		if panicIfNotPnmlCompliant {
+			return errors.New("An annotation graphics must have an offset")
+		}
+		log.Print("Pinimili: graphics element with no offset element")
 	}
 	*a = AnnotationGraphics(aa)
 	return nil

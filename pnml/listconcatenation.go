@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type ListConcatenation struct {
@@ -17,7 +18,10 @@ func (l *ListConcatenation) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		return err
 	}
 	if len(ll.Terms) != 2 {
-		return errors.New("ListConcatenation: listconcatenation must have two list elements")
+		if panicIfNotPnmlCompliant {
+			return errors.New("ListConcatenation: listconcatenation must have two list elements")
+		}
+		log.Print("Pinimili: listconcatenation element with ", len(ll.Terms), " subterm elements (should be 2)")
 	}
 	*l = ListConcatenation(ll)
 	return nil

@@ -7,8 +7,12 @@ import (
 )
 
 // Getptids returns the ids of the places and transitions of a pnml model
-// described in the file whose path is given in argument
-func Getptids(path string) (pids []string, tids []string) {
+// described in the file whose path is given in argument, if the panicOnWrongModel
+// argument is false, the model will be read even if it contains small mistakes
+// such as wrong operators arities
+func Getptids(path string, panicOnWrongModel bool) (pids []string, tids []string) {
+
+	panicIfNotPnmlCompliant = panicOnWrongModel
 
 	pnmlFile, err := os.Open(path)
 	if err != nil {

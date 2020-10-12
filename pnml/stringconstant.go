@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type StringConstant struct {
@@ -21,7 +22,10 @@ func (s *StringConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return errors.New("StringConstant: a stringconstant must have a value attribute")
 	}
 	if len(ss.Terms) != 0 {
-		return errors.New("StringConstant: a stringconstant must have no subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("StringConstant: a stringconstant must have no subterms")
+		}
+		log.Print("Pinimili: stringconstant element with ", len(ss.Terms), " subterm elements (should be 0)")
 	}
 	*s = StringConstant(ss)
 	return nil

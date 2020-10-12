@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type ListAppend struct {
@@ -17,7 +18,10 @@ func (l *ListAppend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		return err
 	}
 	if len(ll.Terms) != 2 {
-		return errors.New("ListAppend: listappend must have a list element and another element of the sort of the list")
+		if panicIfNotPnmlCompliant {
+			return errors.New("ListAppend: listappend must have a list element and another element of the sort of the list")
+		}
+		log.Print("Pinimili: listappend element with ", len(ll.Terms), " subterm elements (should be 2)")
 	}
 	*l = ListAppend(ll)
 	return nil

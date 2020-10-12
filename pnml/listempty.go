@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type ListEmpty struct {
@@ -21,7 +22,10 @@ func (l *ListEmpty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return errors.New("ListEmpty: emptylist must have a sort")
 	}
 	if len(ll.Terms) != 0 {
-		return errors.New("ListEmpty: emptylist must not have subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("ListEmpty: emptylist must not have subterms")
+		}
+		log.Print("Pinimili: emptylist element with ", len(ll.Terms), " subterm elements (should be 0)")
 	}
 	*l = ListEmpty(ll)
 	return nil

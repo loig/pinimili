@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type IntNumberConstant struct {
@@ -26,7 +27,10 @@ func (i *IntNumberConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		return errors.New("IntNumberConstant: a numberconstant must have a value attribute")
 	}
 	if len(ii.Terms) != 0 {
-		return errors.New("IntNumberConstant: a numberconstant must have no subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("IntNumberConstant: a numberconstant must have no subterms")
+		}
+		log.Print("Pinimili: numberconstant element with ", len(ii.Terms), " subterm elements (should be 0)")
 	}
 	numTypes := 0
 	if ii.IntNatural != nil {

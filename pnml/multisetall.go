@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type MultisetAll struct {
@@ -18,7 +19,10 @@ func (m *MultisetAll) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return err
 	}
 	if len(mm.Terms) != 0 {
-		return errors.New("MultisetAll: all must not have subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("MultisetAll: all must not have subterms")
+		}
+		log.Print("Pinimili: all element with ", len(mm.Terms), " subterm elements (should be 0)")
 	}
 	if mm.Sort == nil {
 		return errors.New("MultisetAll: all must have a sort")

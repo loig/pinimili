@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type IntSubtraction struct {
@@ -17,7 +18,10 @@ func (i *IntSubtraction) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return err
 	}
 	if len(ii.Terms) != 2 {
-		return errors.New("IntSubtraction: subtraction must have two subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("IntSubtraction: subtraction must have two subterms")
+		}
+		log.Print("Pinimili: subtraction element with ", len(ii.Terms), " subterm elements (should be 2)")
 	}
 	*i = IntSubtraction(ii)
 	return nil

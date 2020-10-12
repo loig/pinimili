@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 )
 
 type MultisetEmpty struct {
@@ -18,7 +19,10 @@ func (m *MultisetEmpty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		return err
 	}
 	if len(mm.Terms) != 0 {
-		return errors.New("MultisetEmpty: empty must not have subterms")
+		if panicIfNotPnmlCompliant {
+			return errors.New("MultisetEmpty: empty must not have subterms")
+		}
+		log.Print("Pinimili: empty element with ", len(mm.Terms), " subterm elements (should be 0)")
 	}
 	if mm.Sort == nil {
 		return errors.New("MultisetEmpty: empty must have a sort")
