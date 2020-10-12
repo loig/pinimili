@@ -1,9 +1,12 @@
 package pnml
 
 import (
+	"bytes"
 	"encoding/xml"
 	"io/ioutil"
 	"os"
+
+	"golang.org/x/net/html/charset"
 )
 
 // Getptids returns the ids of the places and transitions of a pnml model
@@ -25,7 +28,14 @@ func Getptids(path string, panicOnWrongModel bool) (pids []string, tids []string
 	}
 
 	var pnml Pnml
-	err = xml.Unmarshal(byteValue, &pnml)
+
+	reader := bytes.NewReader(byteValue)
+	decoder := xml.NewDecoder(reader)
+	decoder.CharsetReader = charset.NewReaderLabel
+	err = decoder.Decode(&pnml)
+
+	// err = xml.Unmarshal(byteValue, &pnml)
+
 	if err != nil {
 		panic(err)
 	}
