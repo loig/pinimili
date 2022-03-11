@@ -1,14 +1,6 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/loig/pinimili/pnml"
-)
-
 func main() {
-
-	fmt.Println(pnml.Getptids("test.pnml", false))
 
 	/*
 		pnmlFile, err := os.Open("test.pnml")
