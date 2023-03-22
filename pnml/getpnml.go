@@ -3,7 +3,7 @@ package pnml
 import (
 	"bytes"
 	"encoding/xml"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"golang.org/x/net/html/charset"
@@ -22,7 +22,7 @@ func GetPnml(path string, panicOnWrongModel bool) *Pnml {
 		panic(err)
 	}
 
-	byteValue, err := ioutil.ReadAll(pnmlFile)
+	byteValue, err := io.ReadAll(pnmlFile)
 	if err != nil {
 		panic(err)
 	}
