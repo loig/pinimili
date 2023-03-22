@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -20,10 +21,12 @@ func (o *Offset) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 	if oo.X == nil || oo.Y == nil {
 		// the fact that maybe x="" or y="" in the xml file is not checked
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", offset without x or y attribute")
 		if panicIfNotPnmlCompliant {
-			return errors.New("An offset must have an x and a y value")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: offset element with no x or no y attribute")
+		log.Print("Pinimili: ", msg)
 	}
 	*o = Offset(oo)
 	return nil

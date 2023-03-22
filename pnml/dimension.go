@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Dimension struct {
@@ -20,7 +21,9 @@ func (di *Dimension) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	if dd.X == nil || dd.Y == nil {
 		// the fact that maybe x="" or y="" in the xml file is not checked
 		// the constraint on the number of digits is not tested
-		return errors.New("A dimension must have an x and a y value")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", dimension with missing x or missing y")
+		return errors.New(msg)
 	}
 	*di = Dimension(dd)
 	return nil

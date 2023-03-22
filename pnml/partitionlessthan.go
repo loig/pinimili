@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PartitionLessThan struct {
@@ -17,7 +18,9 @@ func (p *PartitionLessThan) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		return err
 	}
 	if len(pp.Terms) != 2 {
-		return errors.New("PartitionLessThan: ltp must have two terms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", ltp with ", len(pp.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*p = PartitionLessThan(pp)
 	return nil

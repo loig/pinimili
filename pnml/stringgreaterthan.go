@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringGreaterThan struct {
@@ -17,7 +18,9 @@ func (s *StringGreaterThan) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		return err
 	}
 	if len(ss.Terms) != 2 {
-		return errors.New("StringGreaterThan: gts must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", gts with ", len(ss.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*s = StringGreaterThan(ss)
 	return nil

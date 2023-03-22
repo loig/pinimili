@@ -2,7 +2,8 @@ package pnml
 
 import (
 	"encoding/xml"
-	"log"
+	"errors"
+	"fmt"
 )
 
 type HLSort struct {
@@ -96,7 +97,9 @@ func (h *HLSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		h.Value = sort
 	default:
-		log.Panic("HLSort: Unknown sort ", h.Type)
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", unknown sort ", h.Type)
+		return errors.New(msg)
 	}
 	return nil
 }

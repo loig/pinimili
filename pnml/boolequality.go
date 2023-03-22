@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type BoolEquality struct {
@@ -17,7 +18,9 @@ func (b *BoolEquality) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 	if len(bb.Terms) != 2 {
-		return errors.New("BoolEquality: equality is always between two elements")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", equality between ", len(bb.Terms), " elements (must be 2)")
+		return errors.New(msg)
 	}
 	*b = BoolEquality(bb)
 	return nil

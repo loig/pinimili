@@ -2,7 +2,8 @@ package pnml
 
 import (
 	"encoding/xml"
-	"log"
+	"errors"
+	"fmt"
 )
 
 type HLTerm struct {
@@ -354,7 +355,16 @@ func (h *HLTerm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		h.Value = term
 	default:
-		log.Panic("HLTerm: Unknown term ", h.Type)
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", unknown term ", h.Type)
+		return errors.New(msg)
+		/*
+			var term HLSubterm
+			if err := d.DecodeElement(&term, &start); err != nil {
+				return err
+			}
+			h.Value = term.Term.Value
+		*/
 	}
 	return nil
 }

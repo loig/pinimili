@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type RefPlace struct {
@@ -20,11 +21,14 @@ func (r *RefPlace) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&rr, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if rr.ID == nil || *rr.ID == "" {
-		return errors.New("A reference place must have a non-empty id")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", referencePlace without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if rr.Reference == nil || *rr.Reference == "" {
-		return errors.New("A reference place must have a non-empty reference")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", referencePlace without ref attribute (or with empty ref)")
+		return errors.New(msg)
 	}
 	*r = RefPlace(rr)
 	return nil

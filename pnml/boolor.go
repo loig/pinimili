@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (b *BoolOr) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(bb.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", or between ", len(bb.Terms), " elements (must be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("BoolOr: or is always between two elements")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: or element with ", len(bb.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*b = BoolOr(bb)
 	return nil

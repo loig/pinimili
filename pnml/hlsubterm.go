@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLSubterm struct {
@@ -17,7 +18,9 @@ func (h *HLSubterm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if hh.Term == nil {
-		return errors.New("HLSubterm: A subterm must have a term")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", subterm without term")
+		return errors.New(msg)
 	}
 	*h = HLSubterm(hh)
 	return nil

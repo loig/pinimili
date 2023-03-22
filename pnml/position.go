@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -20,10 +21,12 @@ func (p *Position) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 	if pp.X == nil || pp.Y == nil {
 		// the fact that maybe x="" or y="" in the xml file is not checked
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", position without x attribute or without y attribute")
 		if panicIfNotPnmlCompliant {
-			return errors.New("A position must have an x and a y value")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili:position element without x or y attribute")
+		log.Print("Pinimili: ", msg)
 	}
 	*p = Position(pp)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type MultisetCardinalityOf struct {
@@ -17,7 +18,9 @@ func (m *MultisetCardinalityOf) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		return err
 	}
 	if len(mm.Terms) != 2 {
-		return errors.New("MultisetCardinalityOf: cardinalityof must have exactly two elements (a multiset and a sort)")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", cardinalityof with ", len(mm.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*m = MultisetCardinalityOf(mm)
 	return nil

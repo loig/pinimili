@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (l *ListConcatenation) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		return err
 	}
 	if len(ll.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", listconcatenation with ", len(ll.Terms), " subterm elements (should be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("ListConcatenation: listconcatenation must have two list elements")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: listconcatenation element with ", len(ll.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*l = ListConcatenation(ll)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringGreaterThanOrEqual struct {
@@ -17,7 +18,9 @@ func (s *StringGreaterThanOrEqual) UnmarshalXML(d *xml.Decoder, start xml.StartE
 		return err
 	}
 	if len(ss.Terms) != 2 {
-		return errors.New("StringGreaterThanOrEqual: geqs must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", geqs with ", len(ss.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*s = StringGreaterThanOrEqual(ss)
 	return nil

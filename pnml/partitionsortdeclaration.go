@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PartitionSortDeclaration struct {
@@ -19,17 +20,22 @@ func (p *PartitionSortDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	if err := d.DecodeElement(&pp, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if pp.ID == nil || *pp.ID == "" {
-		return errors.New("PartitionSortDeclaration: a partition must have a non-empty id attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partition without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if pp.Name == nil || *pp.Name == "" {
-		return errors.New("PartitionSortDeclaration: a partition must have a non-empty name attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partition without name attribute (or with empty name)")
+		return errors.New(msg)
 	}
 	if pp.Sort == nil {
-		return errors.New("PartitionSortDeclaration: a partition must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partition without sort")
+		return errors.New(msg)
 	}
 	if len(pp.PartitionElements) < 1 {
-		return errors.New("PartitionSortDeclaration: a partition must have at least one partitionelement")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partition with ", len(pp.PartitionElements), " partitionelement elements (should be at least 1)")
+		return errors.New(msg)
 	}
 	*p = PartitionSortDeclaration(pp)
 	return nil

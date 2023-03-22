@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PTArcAnnotation struct {
@@ -19,7 +20,9 @@ func (p *PTArcAnnotation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 		return err
 	}
 	if pp.Value == nil || *pp.Value == 0 {
-		return errors.New("A PT Arc Annotation must have a value (different from 0)")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", inscription without value (or with value 0)")
+		return errors.New(msg)
 	}
 	*p = PTArcAnnotation(pp)
 	return nil

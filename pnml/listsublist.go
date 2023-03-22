@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type ListSublist struct {
@@ -18,14 +19,18 @@ func (l *ListSublist) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	if err := d.DecodeElement(&ll, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ll.Start == nil {
-		return errors.New("ListSublist: sublist must have a start attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", sublist without start attribute")
+		return errors.New(msg)
 	}
 	if ll.Length == nil {
-		return errors.New("ListSublist: sublist must have a length attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", sublist without length attribute")
+		return errors.New(msg)
 	}
 	if len(ll.Terms) != 1 {
-		return errors.New("ListSublist: sublist must have exactly one list element")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", sublist with ", len(ll.Terms), " subterm elements (should be 1)")
+		return errors.New(msg)
 	}
 	*l = ListSublist(ll)
 	return nil

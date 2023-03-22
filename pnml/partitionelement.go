@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PartitionElement struct {
@@ -18,14 +19,18 @@ func (p *PartitionElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	if err := d.DecodeElement(&pp, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if pp.ID == nil || *pp.ID == "" {
-		return errors.New("PartitionElement: a partitionelement must have a non-empty id attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partitionelement without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if pp.Name == nil || *pp.Name == "" {
-		return errors.New("PartitionElement: a partitionelement must have a non-empty name attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partitionelement without name attribute (or with empty name)")
+		return errors.New(msg)
 	}
 	if len(pp.Terms) < 1 {
-		return errors.New("PartitionElement: a partitionelement must have at least one term")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partitionelement with ", len(pp.Terms), " terms (should be at least 1)")
+		return errors.New(msg)
 	}
 	*p = PartitionElement(pp)
 	return nil

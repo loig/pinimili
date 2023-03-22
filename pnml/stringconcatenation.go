@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (s *StringConcatenation) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		return err
 	}
 	if len(ss.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", stringconcatenation with ", len(ss.Terms), " subterm elements (should be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("StringConcatenation: stringconcatenation must have two subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: stringconcatenation element with ", len(ss.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*s = StringConcatenation(ss)
 	return nil

@@ -1,6 +1,10 @@
 package main
 
+import "github.com/loig/pinimili/pnml"
+
 func main() {
+
+	pnml.GetPnml("test.pnml", false)
 
 	/*
 		pnmlFile, err := os.Open("test.pnml")

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,14 +19,17 @@ func (s *StringConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	if err := d.DecodeElement(&ss, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ss.Value == nil {
-		return errors.New("StringConstant: a stringconstant must have a value attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", stringconstant without value attribute")
+		return errors.New(msg)
 	}
 	if len(ss.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", stringconstant with ", len(ss.Terms), " subterm elements (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("StringConstant: a stringconstant must have no subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: stringconstant element with ", len(ss.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	*s = StringConstant(ss)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLSortStructure struct {
@@ -17,7 +18,9 @@ func (h *HLSortStructure) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 		return err
 	}
 	if hh.Sort == nil {
-		return errors.New("HLSortStructure: A structure must have a sort")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", structure without sort")
+		return errors.New(msg)
 	}
 	*h = HLSortStructure(hh)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type IntModulo struct {
@@ -17,7 +18,9 @@ func (i *IntModulo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(ii.Terms) != 2 {
-		return errors.New("IntModulo: mod must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", mod with ", len(ii.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*i = IntModulo(ii)
 	return nil

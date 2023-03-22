@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLTermDef struct {
@@ -17,7 +18,9 @@ func (h *HLTermDef) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if hh.Term == nil {
-		return errors.New("HLTermDef: A def must have a term")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", def without term")
+		return errors.New(msg)
 	}
 	*h = HLTermDef(hh)
 	return nil

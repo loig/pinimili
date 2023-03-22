@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PageGraphics = NodeGraphics
@@ -30,7 +31,9 @@ func (p *Page) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if pp.ID == nil || *pp.ID == "" {
-		return errors.New("A page must have a non-empty id")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", page with without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	*p = Page(pp)
 	return nil

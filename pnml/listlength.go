@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type ListLength struct {
@@ -17,7 +18,9 @@ func (l *ListLength) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		return err
 	}
 	if len(ll.Terms) != 1 {
-		return errors.New("ListLength: listlength must have exactly one list element")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", listlength with ", len(ll.Terms), " subterm elements (should be 1)")
+		return errors.New(msg)
 	}
 	*l = ListLength(ll)
 	return nil

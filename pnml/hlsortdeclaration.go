@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLSortDeclaration struct {
@@ -18,14 +19,18 @@ func (h *HLSortDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	if err := d.DecodeElement(&hh, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if hh.ID == nil || *hh.ID == "" {
-		return errors.New("HLSortDeclaration: A namedsort must have a non-empty id attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedsort without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if hh.Name == nil || *hh.Name == "" {
-		return errors.New("HLSortDeclaration: A namedsort must have a non-empty name attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedsort without name attribute (or with empty name)")
+		return errors.New(msg)
 	}
 	if hh.Sort == nil {
-		return errors.New("HLSortDeclaration: A namedsort must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedsort without sort")
+		return errors.New(msg)
 	}
 	*h = HLSortDeclaration(hh)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Place struct {
@@ -24,7 +25,9 @@ func (p *Place) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if pp.ID == nil || *pp.ID == "" {
-		return errors.New("A place must have a non-empty id")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", place without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	*p = Place(pp)
 	return nil

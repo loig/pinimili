@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type IntGreaterThan struct {
@@ -17,7 +18,9 @@ func (i *IntGreaterThan) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return err
 	}
 	if len(ii.Terms) != 2 {
-		return errors.New("IntGreaterThan: gt must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", gt with ", len(ii.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*i = IntGreaterThan(ii)
 	return nil

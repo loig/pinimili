@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringSubstring struct {
@@ -18,14 +19,18 @@ func (s *StringSubstring) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	if err := d.DecodeElement(&ss, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ss.Start == nil {
-		return errors.New("StringSubstring: a substring must have a start attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", substring without start attribute")
+		return errors.New(msg)
 	}
 	if ss.Length == nil {
-		return errors.New("StringSubstring: a substring must have a length attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", substring without length attribute")
+		return errors.New(msg)
 	}
 	if len(ss.Terms) != 1 {
-		return errors.New("StringSubstring: a substring must have exactly one subterm")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", substring with ", len(ss.Terms), " subterm elements (should be 1)")
+		return errors.New(msg)
 	}
 	*s = StringSubstring(ss)
 	return nil

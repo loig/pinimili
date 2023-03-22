@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type RefTransition struct {
@@ -20,11 +21,14 @@ func (r *RefTransition) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	if err := d.DecodeElement(&rr, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if rr.ID == nil || *rr.ID == "" {
-		return errors.New("A reference transition must have a non-empty id")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", referenceTransition without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if rr.Reference == nil || *rr.Reference == "" {
-		return errors.New("A reference transition must have a non-empty reference")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", referenceTransition without ref attribute (or with empty ref)")
+		return errors.New(msg)
 	}
 	*r = RefTransition(rr)
 	return nil

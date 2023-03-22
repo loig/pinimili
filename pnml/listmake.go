@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type ListMake struct {
@@ -17,11 +18,14 @@ func (l *ListMake) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&ll, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ll.Sort == nil {
-		return errors.New("ListMake: makelist must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", makelist without sort")
+		return errors.New(msg)
 	}
 	if len(ll.Terms) < 1 {
-		return errors.New("ListMake: makelist needs at least one element to build a list")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", makelist with", len(ll.Terms), "subterm elements (should be at least 1)")
+		return errors.New(msg)
 	}
 	*l = ListMake(ll)
 	return nil

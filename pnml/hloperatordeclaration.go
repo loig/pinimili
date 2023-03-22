@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLOperatorDeclaration struct {
@@ -19,14 +20,18 @@ func (h *HLOperatorDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	if err := d.DecodeElement(&hh, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if hh.ID == nil || *hh.ID == "" {
-		return errors.New("HLOperatorDeclaration: A namedoperator must have a non-empty ID attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedoperator without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if hh.Name == nil || *hh.Name == "" {
-		return errors.New("HLOperatorDeclaration: A namedoperator must have a non-empty name attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedoperator without name attribute (or with empty name)")
+		return errors.New(msg)
 	}
 	if hh.Def == nil {
-		return errors.New("HLOperatorDeclaration: A namedoperator must have a def")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", namedoperator without def")
+		return errors.New(msg)
 	}
 	*h = HLOperatorDeclaration(hh)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type FIRLessThan struct {
@@ -17,7 +18,9 @@ func (f *FIRLessThan) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return err
 	}
 	if len(ff.Terms) != 2 {
-		return errors.New("FIRLessThan: lessthan must compare two elements")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", lessthan with ", len(ff.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*f = FIRLessThan(ff)
 	return nil

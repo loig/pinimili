@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Transition struct {
@@ -22,7 +23,9 @@ func (t *Transition) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		return err
 	}
 	if tt.ID == nil || *tt.ID == "" {
-		return errors.New("A transition must have a non-empty id")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", transition element without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	*t = Transition(tt)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLVariableDeclaration struct {
@@ -18,14 +19,18 @@ func (h *HLVariableDeclaration) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	if err := d.DecodeElement(&hh, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if hh.ID == nil || *hh.ID == "" {
-		return errors.New("HLVariableDeclaration: A variabledecl must have a non-empty id attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", variabledecl without id attribute (or with empty id)")
+		return errors.New(msg)
 	}
 	if hh.Name == nil || *hh.Name == "" {
-		return errors.New("HLVariableDeclaration: A variabledecl must have a non-empty name attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", variabledecl without name attribute (or with empty name)")
+		return errors.New(msg)
 	}
 	if hh.Sort == nil {
-		return errors.New("HLVariableDeclaration: A variabledecl must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", variabledecl without sort")
+		return errors.New(msg)
 	}
 	*h = HLVariableDeclaration(hh)
 	return nil

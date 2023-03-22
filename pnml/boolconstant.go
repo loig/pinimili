@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,14 +19,17 @@ func (b *BoolConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	if err := d.DecodeElement(&bb, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if bb.Value == nil {
-		return errors.New("BoolConstant: a booleanconstant must have a value attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", a boolean constant must have a value attribute")
+		return errors.New(msg)
 	}
 	if len(bb.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", booleanconstant with ", len(bb.Terms), " subterms (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("BoolConstant: a booleanconstant must not have subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: booleanconstant element with ", len(bb.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	*b = BoolConstant(bb)
 	return nil

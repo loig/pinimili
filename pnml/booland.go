@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (b *BoolAnd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(bb.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", and with ", len(bb.Terms), " subterms (should be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("BoolAnd: and is always between two elements")
+			return errors.New("msg")
 		}
-		log.Print("Pinimili: and element with ", len(bb.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*b = BoolAnd(bb)
 	return nil

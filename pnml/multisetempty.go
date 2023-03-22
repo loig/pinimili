@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,14 +19,17 @@ func (m *MultisetEmpty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	if err := d.DecodeElement(&mm, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if len(mm.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", empty with ", len(mm.Terms), " subterm elements (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("MultisetEmpty: empty must not have subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: empty element with ", len(mm.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	if mm.Sort == nil {
-		return errors.New("MultisetEmpty: empty must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", empty without sort")
+		return errors.New(msg)
 	}
 	*m = MultisetEmpty(mm)
 	return nil

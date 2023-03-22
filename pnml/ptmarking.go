@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PTMarking struct {
@@ -19,7 +20,9 @@ func (p *PTMarking) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if pp.Tokens == nil {
-		return errors.New("A PT Marking must have a value")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", initialMarking without value")
+		return errors.New(msg)
 	}
 	*p = PTMarking(pp)
 	return nil

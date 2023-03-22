@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (m *MultisetAdd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return err
 	}
 	if len(mm.Terms) < 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", add with ", len(mm.Terms), " subterm elements (should be at least 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("MultisetAdd: add must have at least two multiset elements")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: add element with ", len(mm.Terms), " subterm elements (should be at least 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*m = MultisetAdd(mm)
 	return nil

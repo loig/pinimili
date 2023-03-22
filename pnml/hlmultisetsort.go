@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLMultisetSort struct {
@@ -17,7 +18,9 @@ func (h *HLMultisetSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return err
 	}
 	if hh.Sort == nil {
-		return errors.New("HLMultisetSort: A multisetsort must have a sort")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", multisetsort without a sort")
+		return errors.New(msg)
 	}
 	*h = HLMultisetSort(hh)
 	return nil

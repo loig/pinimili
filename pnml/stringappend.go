@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringAppend struct {
@@ -17,7 +18,9 @@ func (s *StringAppend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 	if len(ss.Terms) != 2 {
-		return errors.New("StringAppend: stringappend must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", stringappend with ", len(ss.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*s = StringAppend(ss)
 	return nil

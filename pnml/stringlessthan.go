@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringLessThan struct {
@@ -17,7 +18,9 @@ func (s *StringLessThan) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return err
 	}
 	if len(ss.Terms) != 2 {
-		return errors.New("StringLessThan: lts must have two subterms")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", lts with ", len(ss.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*s = StringLessThan(ss)
 	return nil

@@ -15,6 +15,7 @@ import (
 func GetPnml(path string, panicOnWrongModel bool) *Pnml {
 
 	panicIfNotPnmlCompliant = panicOnWrongModel
+	modelPath = path
 
 	pnmlFile, err := os.Open(path)
 	if err != nil {

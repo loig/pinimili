@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -21,10 +22,12 @@ func (n *NodeGraphics) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 	if nn.Position == nil {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", graphics without position")
 		if panicIfNotPnmlCompliant {
-			return errors.New("A node (or page) graphics must have a position")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: graphics element with no position element")
+		log.Print("Pinimili: ", msg)
 	}
 	*n = NodeGraphics(nn)
 	return nil

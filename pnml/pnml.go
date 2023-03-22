@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Pnml struct {
@@ -17,7 +18,9 @@ func (p *Pnml) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(pp.Nets) < 1 {
-		return errors.New("A PNML file must contain at least one net")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", PNML file with ", len(pp.Nets), " net elements (should be at least 1)")
+		return errors.New(msg)
 	}
 	*p = Pnml(pp)
 	return nil

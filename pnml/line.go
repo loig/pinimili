@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Line struct {
@@ -19,16 +20,19 @@ func (l *Line) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&ll, &start); err != nil {
 		return err
 	}
+	lin, col := d.InputPos()
 	if ll.Shape != nil &&
 		*ll.Shape != "line" &&
 		*ll.Shape != "curve" {
-		return errors.New("A line shape must be line or curve")
+		msg := fmt.Sprint(modelPath, " at line ", lin, ", col ", col, ", line must have a shape attribute which value is line or curve")
+		return errors.New(msg)
 	}
 	if ll.Style != nil &&
 		*ll.Style != "solid" &&
 		*ll.Style != "dash" &&
 		*ll.Style != "dot" {
-		return errors.New("A line style must be solid, dash, or dot")
+		msg := fmt.Sprint(modelPath, " at line ", lin, ", col ", col, ", line must have a style attribute which value is solid, dash, or dot")
+		return errors.New(msg)
 	}
 	// the value of the width is not tested
 	*l = Line(ll)

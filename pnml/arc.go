@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Arc struct {
@@ -24,14 +25,18 @@ func (a *Arc) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&aa, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if aa.ID == nil || *aa.ID == "" {
-		return errors.New("An arc must have a non-empty id")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", an arc must have a non-empty id")
+		return errors.New(msg)
 	}
 	if aa.Source == nil || *aa.Source == "" {
-		return errors.New("An arc must have a source")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", an arc must have a source")
+		return errors.New(msg)
 	}
 	if aa.Target == nil || *aa.Target == "" {
-		return errors.New("An arc must have a target")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", an arc must have a target")
+		return errors.New(msg)
 	}
 	*a = Arc(aa)
 	return nil

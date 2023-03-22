@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type ToolSpecific struct {
@@ -18,11 +19,14 @@ func (t *ToolSpecific) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	if err := d.DecodeElement(&tt, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if tt.Tool == nil || *tt.Tool == "" {
-		return errors.New("A tool specific element must have a tool name")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", toolspecific element without tool attribute (or with empty tool)")
+		return errors.New(msg)
 	}
 	if tt.Version == nil || *tt.Version == "" {
-		return errors.New("A tool specific element must have a version")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", toolspecific element without version attribute (or with empty version)")
+		return errors.New(msg)
 	}
 	*t = ToolSpecific(tt)
 	return nil

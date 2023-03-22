@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,14 +19,17 @@ func (m *MultisetAll) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	if err := d.DecodeElement(&mm, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if len(mm.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", all with ", len(mm.Terms), " subterm elements (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("MultisetAll: all must not have subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: all element with ", len(mm.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	if mm.Sort == nil {
-		return errors.New("MultisetAll: all must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", all without sort")
+		return errors.New(msg)
 	}
 	*m = MultisetAll(mm)
 	return nil

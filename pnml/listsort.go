@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type ListSort struct {
@@ -17,7 +18,9 @@ func (l *ListSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if ll.Sort == nil {
-		return errors.New("ListSort: a list must have a sort")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", list without sort")
+		return errors.New(msg)
 	}
 	*l = ListSort(ll)
 	return nil

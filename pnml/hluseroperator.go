@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLUserOperator struct { // recursion forbidden
@@ -18,7 +19,9 @@ func (h *HLUserOperator) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		return err
 	}
 	if hh.ID == nil || *hh.ID == "" {
-		return errors.New("HLUserOperator: A useroperator must have a non-empty declaration attribute")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", useroperator without declaration attribute (or with empty declaration)")
+		return errors.New(msg)
 	}
 	*h = HLUserOperator(hh)
 	return nil

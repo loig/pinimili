@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -23,33 +24,39 @@ func (i *IntNumberConstant) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	if err := d.DecodeElement(&ii, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ii.Value == nil {
-		return errors.New("IntNumberConstant: a numberconstant must have a value attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", numberconstant without value attribute")
+		return errors.New(msg)
 	}
 	if len(ii.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", numberconstant with ", len(ii.Terms), " subterm elements (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("IntNumberConstant: a numberconstant must have no subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: numberconstant element with ", len(ii.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	numTypes := 0
 	if ii.IntNatural != nil {
 		numTypes++
 		if *ii.Value < 0 {
-			return errors.New("IntNumberConstant: a natural numberconstant must be greater or equal than 0")
+			msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", natural numberconstant must lower than 0")
+			return errors.New(msg)
 		}
 	}
 	if ii.IntPositive != nil {
 		numTypes++
 		if *ii.Value <= 0 {
-			return errors.New("IntNumberConstant: a positive numberconstant must be greater or equal than 0")
+			msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", positive numberconstant lower or equal than 0")
+			return errors.New(msg)
 		}
 	}
 	if ii.IntInteger != nil {
 		numTypes++
 	}
 	if numTypes != 1 {
-		return errors.New("IntNumberConst: a numberconstant must have exactly one number sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", numberconstant with ", numTypes, "number sorts (should be 1)")
+		return errors.New(msg)
 	}
 	*i = IntNumberConstant(ii)
 	return nil

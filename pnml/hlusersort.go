@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLUserSort struct {
@@ -17,7 +18,9 @@ func (h *HLUserSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		return err
 	}
 	if hh.ID == nil || *hh.ID == "" {
-		return errors.New("HLUserSort: A usersort must have a non-empty declaration attribute")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", usersort without declaration attribute (or with empty declaration)")
+		return errors.New(msg)
 	}
 	*h = HLUserSort(hh)
 	return nil

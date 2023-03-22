@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type FIRSort struct {
@@ -17,11 +18,14 @@ func (f *FIRSort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&ff, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ff.Start == nil {
-		return errors.New("FIRSort: a finiteintrange must have a start attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", finiterange without start attribute")
+		return errors.New(msg)
 	}
 	if ff.End == nil {
-		return errors.New("FIRSort: a finiteintrange must have an end attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", finiterange without end attribute")
+		return errors.New(msg)
 	}
 	*f = FIRSort(ff)
 	return nil

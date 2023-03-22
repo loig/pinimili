@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type FIRGreaterThanOrEqual struct {
@@ -17,7 +18,9 @@ func (f *FIRGreaterThanOrEqual) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		return err
 	}
 	if len(ff.Terms) != 2 {
-		return errors.New("FIRGreaterThanOrEqual: greaterthanorequal must compare two elements")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", greaterthanorequal with ", len(ff.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*f = FIRGreaterThanOrEqual(ff)
 	return nil

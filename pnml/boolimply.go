@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type BoolImply struct {
@@ -17,7 +18,9 @@ func (b *BoolImply) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return err
 	}
 	if len(bb.Terms) != 2 {
-		return errors.New("BoolImply: imply is always between two elements")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", imply between ", len(bb.Terms), " elements (must be 2)")
+		return errors.New(msg)
 	}
 	*b = BoolImply(bb)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Fill struct {
@@ -23,7 +24,9 @@ func (f *Fill) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		*ff.GradientRotation != "vertical" &&
 		*ff.GradientRotation != "horizontal" &&
 		*ff.GradientRotation != "diagonal" {
-		return errors.New("A fill gradient rotation must be vertical, horizontal, or diagonal")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", fill must have a gradient-rotation attribute which value is vertical, horizontal or diagonal")
+		return errors.New(msg)
 	}
 	*f = Fill(ff)
 	return nil

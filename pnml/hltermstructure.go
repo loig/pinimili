@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type HLTermStructure struct {
@@ -17,7 +18,9 @@ func (h *HLTermStructure) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 		return err
 	}
 	if hh.Term == nil {
-		return errors.New("HLTermStructure: A structure must have a term")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", structure without term")
+		return errors.New(msg)
 	}
 	*h = HLTermStructure(hh)
 	return nil

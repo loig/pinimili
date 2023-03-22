@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (m *MultisetSubtract) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		return err
 	}
 	if len(mm.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", subtract with ", len(mm.Terms), " subterm elements (should be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("MultisetSubtract: subtract must have exactly two multiset elements")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: subtract element with ", len(mm.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*m = MultisetSubtract(mm)
 	return nil

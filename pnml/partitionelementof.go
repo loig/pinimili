@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type PartitionElementOf struct {
@@ -17,11 +18,14 @@ func (p *PartitionElementOf) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	if err := d.DecodeElement(&pp, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if pp.Ref == nil || *pp.Ref == "" {
-		return errors.New("PartitionElementOf: partitionelementof must have a non-empty refpartition attribute")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partitionelementof without refpartition attribute (or with empty refpartition)")
+		return errors.New(msg)
 	}
 	if len(pp.Terms) != 1 {
-		return errors.New("PartitionElementOf: partitionelementof must have one term")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", partitionelementof with ", len(pp.Terms), " subterm elements (should be 1)")
+		return errors.New(msg)
 	}
 	*p = PartitionElementOf(pp)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type Font struct {
@@ -22,17 +23,20 @@ func (f *Font) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&ff, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ff.Decoration != nil &&
 		*ff.Decoration != "underline" &&
 		*ff.Decoration != "overline" &&
 		*ff.Decoration != "line-through" {
-		return errors.New("A font decoration must be underline, overline, or line-through")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", font must have a decoration attribute which value is underline, overline, or line-through")
+		return errors.New(msg)
 	}
 	if ff.Align != nil &&
 		*ff.Align != "left" &&
 		*ff.Align != "center" &&
 		*ff.Align != "right" {
-		return errors.New("A font align must be left, center, or right")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", font must have an align attribute which value is left, center, or right")
+		return errors.New(msg)
 	}
 	*f = Font(ff)
 	return nil

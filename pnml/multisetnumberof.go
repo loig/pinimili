@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type MultisetNumberOf struct {
@@ -17,7 +18,9 @@ func (m *MultisetNumberOf) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		return err
 	}
 	if len(mm.Terms) != 2 {
-		return errors.New("MultisetNumberOf: numberof must have exactly one scalar element and one sort element")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", numberof with ", len(mm.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*m = MultisetNumberOf(mm)
 	return nil

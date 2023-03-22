@@ -16,3 +16,4 @@ pinimili
 # vendor/
 
 *.pnml
+*.sh

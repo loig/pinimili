@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type MultisetScalarProduct struct {
@@ -16,8 +17,10 @@ func (m *MultisetScalarProduct) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	if err := d.DecodeElement(&mm, &start); err != nil {
 		return err
 	}
-	if len(mm.Terms) != 1 { // should be 2 ?
-		return errors.New("MultisetScalarProduct: scalarproduct must have exactly one scalar element and one multiset element")
+	if len(mm.Terms) != 2 { // was 1, do not know why, one should check if it is an issue
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", scalarproduct with ", len(mm.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*m = MultisetScalarProduct(mm)
 	return nil

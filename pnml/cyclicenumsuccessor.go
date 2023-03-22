@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type CyclicEnumSuccessor struct {
@@ -17,7 +18,9 @@ func (c *CyclicEnumSuccessor) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		return err
 	}
 	if len(cc.Terms) != 1 {
-		return errors.New("CyclicEnumSuccessor: a successor must have exactly one element")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", successor with ", len(cc.Terms), " elements (must be 1)")
+		return errors.New(msg)
 	}
 	*c = CyclicEnumSuccessor(cc)
 	return nil

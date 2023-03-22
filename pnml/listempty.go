@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,14 +19,17 @@ func (l *ListEmpty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if err := d.DecodeElement(&ll, &start); err != nil {
 		return err
 	}
+	line, col := d.InputPos()
 	if ll.Sort == nil {
-		return errors.New("ListEmpty: emptylist must have a sort")
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", emptylist without sort")
+		return errors.New(msg)
 	}
 	if len(ll.Terms) != 0 {
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", emptylist with ", len(ll.Terms), " subterm elements (should be 0)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("ListEmpty: emptylist must not have subterms")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: emptylist element with ", len(ll.Terms), " subterm elements (should be 0)")
+		log.Print("Pinimili: ", msg)
 	}
 	*l = ListEmpty(ll)
 	return nil

@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type StringLength struct {
@@ -17,7 +18,9 @@ func (s *StringLength) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 	if len(ss.Terms) != 1 {
-		return errors.New("StringLength: stringlength must have exactly one subterm")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", stringlength with ", len(ss.Terms), " subterm elements (should be 1)")
+		return errors.New(msg)
 	}
 	*s = StringLength(ss)
 	return nil

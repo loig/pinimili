@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -18,10 +19,12 @@ func (l *ListAppend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		return err
 	}
 	if len(ll.Terms) != 2 {
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", listappend with ", len(ll.Terms), " subterm elements (should be 2)")
 		if panicIfNotPnmlCompliant {
-			return errors.New("ListAppend: listappend must have a list element and another element of the sort of the list")
+			return errors.New(msg)
 		}
-		log.Print("Pinimili: listappend element with ", len(ll.Terms), " subterm elements (should be 2)")
+		log.Print("Pinimili: ", msg)
 	}
 	*l = ListAppend(ll)
 	return nil

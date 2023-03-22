@@ -3,6 +3,7 @@ package pnml
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 )
 
 type MultisetContains struct {
@@ -17,7 +18,9 @@ func (m *MultisetContains) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		return err
 	}
 	if len(mm.Terms) != 2 {
-		return errors.New("MultisetContains: contains must have exactly two multiset elements")
+		line, col := d.InputPos()
+		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", contains with ", len(mm.Terms), " subterm elements (should be 2)")
+		return errors.New(msg)
 	}
 	*m = MultisetContains(mm)
 	return nil

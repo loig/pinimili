@@ -1,5 +1,7 @@
 module github.com/loig/pinimili
 
-go 1.14
+go 1.20
 
-require golang.org/x/net v0.0.0-20201010224723-4f7140c49acb
+require golang.org/x/net v0.8.0
+
+require golang.org/x/text v0.8.0 // indirect
