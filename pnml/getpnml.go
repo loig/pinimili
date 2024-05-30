@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io"
+	"log"
 	"os"
 
 	"golang.org/x/net/html/charset"
@@ -37,6 +38,7 @@ func GetPnml(path string, panicOnWrongModel bool) *Pnml {
 	// err = xml.Unmarshal(byteValue, &pnml)
 
 	if err != nil {
+		log.Print("Pinimili: ", err)
 		panic(err)
 	}
 

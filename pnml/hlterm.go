@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"log"
 )
 
 type HLTerm struct {
@@ -357,7 +358,20 @@ func (h *HLTerm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	default:
 		line, col := d.InputPos()
 		msg := fmt.Sprint(modelPath, " at line ", line, ", col ", col, ", unknown term ", h.Type)
-		return errors.New(msg)
+		if panicIfNotPnmlCompliant {
+			return errors.New(msg)
+		}
+		switch h.Type {
+		case "subterm":
+			log.Print("Pinimili: ", msg)
+			var term HLSubterm
+			if err := d.DecodeElement(&term, &start); err != nil {
+				return err
+			}
+			h.Value = term
+		default:
+			return errors.New(msg)
+		}
 		/*
 			var term HLSubterm
 			if err := d.DecodeElement(&term, &start); err != nil {
